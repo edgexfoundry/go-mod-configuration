@@ -1,0 +1,8 @@
+*~
+*.log
+glide.lock
+vendor
+.idea
+go.sum
+coverage.out
+.DS_Store
