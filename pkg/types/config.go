@@ -23,6 +23,8 @@ import (
 	"strings"
 )
 
+const DefaultProtocol = "http"
+
 // ServiceConfig defines the information need to connect to the Configuration service and optionally register the service
 // for discovery and health checks
 type ServiceConfig struct {
@@ -57,23 +59,31 @@ func (config *ServiceConfig) GetProtocol() string {
 func (config *ServiceConfig) PopulateFromUrl(providerUrl string) error {
 	url, err := url.Parse(providerUrl)
 	if err != nil {
-		return fmt.Errorf("the format of Configuration Provider path from argument is wrong: %s", err.Error())
+		return fmt.Errorf("the format of Provider URL is incorrect (%s): %s", providerUrl, err.Error())
 	}
 
 	port, err := strconv.Atoi(url.Port())
 	if err != nil {
-		return fmt.Errorf("the port format of Configuration Provider path from argument is wrong: %s", err.Error())
+		return fmt.Errorf("the port from Provider URL is incorrect (%s): %s", providerUrl, err.Error())
 	}
 
-	typeAndProtocol := strings.Split(url.Scheme, ".")
-	if len(typeAndProtocol) != 2 {
-		return fmt.Errorf("the Type and Protocol spec of Configuration Provider path from argument is wrong: %s", err.Error())
-	}
-
-	config.Protocol = typeAndProtocol[1]
 	config.Host = url.Hostname()
 	config.Port = port
-	config.Type = typeAndProtocol[0]
+
+	typeAndProtocol := strings.Split(url.Scheme, ".")
+
+	// TODO: Enforce both Type and Protocol present for release V2.0.0
+	// Support for default protocol is for backwards compatibility with Fuji Device Services.
+	switch len(typeAndProtocol) {
+	case 1:
+		config.Type = typeAndProtocol[0]
+		config.Protocol = DefaultProtocol
+	case 2:
+		config.Type = typeAndProtocol[0]
+		config.Protocol = typeAndProtocol[1]
+	default:
+		return fmt.Errorf("the Type and Protocol spec from Provider URL is incorrect: %s", providerUrl)
+	}
 
 	return nil
 }
