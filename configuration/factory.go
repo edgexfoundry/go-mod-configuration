@@ -19,8 +19,8 @@ package configuration
 import (
 	"fmt"
 
-	"github.com/edgexfoundry/go-mod-configuration/internal/pkg/consul"
-	"github.com/edgexfoundry/go-mod-configuration/pkg/types"
+	"github.com/edgexfoundry/go-mod-configuration/v2/internal/pkg/consul"
+	"github.com/edgexfoundry/go-mod-configuration/v2/pkg/types"
 )
 
 func NewConfigurationClient(config types.ServiceConfig) (Client, error) {
