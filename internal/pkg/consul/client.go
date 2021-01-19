@@ -28,7 +28,7 @@ import (
 	"github.com/mitchellh/consulstructure"
 	"github.com/pelletier/go-toml"
 
-	"github.com/edgexfoundry/go-mod-configuration/pkg/types"
+	"github.com/edgexfoundry/go-mod-configuration/v2/pkg/types"
 )
 
 const consulStatusPath = "/v1/status/leader"

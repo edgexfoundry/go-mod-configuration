@@ -1,4 +1,4 @@
-module github.com/edgexfoundry/go-mod-configuration
+module github.com/edgexfoundry/go-mod-configuration/v2
 
 require (
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
