@@ -160,6 +160,55 @@ func TestHasConfigurationError(t *testing.T) {
 	assert.Contains(t, err.Error(), "checking configuration existence")
 }
 
+func TestHasSubConfigurationFalse(t *testing.T) {
+	client := makeConsulClient(t, getUniqueServiceName())
+
+	// Make sure the configuration doesn't already exists
+	reset(t, client)
+
+	// Now push a value so some configuration will exist
+	_ = client.PutConfigurationValue("Dummy", []byte("Value"))
+
+	actual, err := client.HasSubConfiguration("subDummy")
+	if !assert.NoError(t, err) {
+		t.Fatal()
+	}
+
+	assert.False(t, actual)
+}
+
+func TestHasSubConfigurationTrue(t *testing.T) {
+	client := makeConsulClient(t, getUniqueServiceName())
+
+	// Make sure the configuration doesn't already exists
+	reset(t, client)
+
+	// Now push a value so some configuration will exist
+	_ = client.PutConfigurationValue("Dummy", []byte("Value"))
+
+	actual, err := client.HasSubConfiguration("Dummy")
+	if !assert.NoError(t, err) {
+		t.Fatal()
+	}
+
+	assert.True(t, actual)
+}
+
+func TestHasSubConfigurationError(t *testing.T) {
+	goodPort := port
+	port = 1234 // change the Consul port to bad port
+	defer func() {
+		port = goodPort
+	}()
+
+	client := makeConsulClient(t, getUniqueServiceName())
+
+	_, err := client.HasSubConfiguration("dummy")
+	assert.Error(t, err, "expected error checking configuration existence")
+
+	assert.Contains(t, err.Error(), "checking sub configuration existence")
+}
+
 func TestConfigurationValueExists(t *testing.T) {
 	key := "Foo"
 	value := []byte("bar")
