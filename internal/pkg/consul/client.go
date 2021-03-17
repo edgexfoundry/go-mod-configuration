@@ -91,6 +91,17 @@ func (client *consulClient) HasConfiguration() (bool, error) {
 	}
 }
 
+// Checks to see if the Configuration service contains the service's sub configuration.
+func (client *consulClient) HasSubConfiguration(name string) (bool, error) {
+	if stemKeys, _, err := client.consulClient.KV().Keys(client.fullPath(name), "", nil); err != nil {
+		return false, fmt.Errorf("checking sub configuration existence from Consul failed: %v", err)
+	} else if len(stemKeys) == 0 {
+		return false, nil
+	} else {
+		return true, nil
+	}
+}
+
 // Puts a full toml configuration into Consul
 func (client *consulClient) PutConfigurationToml(configuration *toml.Tree, overwrite bool) error {
 

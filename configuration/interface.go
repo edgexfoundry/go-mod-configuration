@@ -24,6 +24,9 @@ type Client interface {
 	// Checks to see if the Configuration service contains the service's configuration.
 	HasConfiguration() (bool, error)
 
+	// Checks to see if the Configuration service contains the service's sub configuration.
+	HasSubConfiguration(name string) (bool, error)
+
 	// Puts a full toml configuration into the Configuration service
 	PutConfigurationToml(configuration *toml.Tree, overwrite bool) error
 
