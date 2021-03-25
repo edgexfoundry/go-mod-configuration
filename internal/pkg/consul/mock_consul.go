@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2019 Intel Corporation
+// Copyright (c) 2021 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,20 +29,24 @@ import (
 	consulapi "github.com/hashicorp/consul/api"
 )
 
-const verbose = false
+const (
+	verbose  = false
+	TokenKey = "X-Consul-Token"
+)
 
 type MockConsul struct {
-	keyValueStore     map[string]*consulapi.KVPair
-	serviceStore      map[string]consulapi.AgentService
-	serviceCheckStore map[string]consulapi.AgentCheck
+	keyValueStore       map[string]*consulapi.KVPair
+	serviceStore        map[string]consulapi.AgentService
+	serviceCheckStore   map[string]consulapi.AgentCheck
+	expectedAccessToken string
 }
 
 func NewMockConsul() *MockConsul {
-	mock := MockConsul{}
-	mock.keyValueStore = make(map[string]*consulapi.KVPair)
-	mock.serviceStore = make(map[string]consulapi.AgentService)
-	mock.serviceCheckStore = make(map[string]consulapi.AgentCheck)
-	return &mock
+	return &MockConsul{
+		keyValueStore:     make(map[string]*consulapi.KVPair),
+		serviceStore:      make(map[string]consulapi.AgentService),
+		serviceCheckStore: make(map[string]consulapi.AgentCheck),
+	}
 }
 
 var keyChannels map[string]chan bool
@@ -60,6 +64,14 @@ func (mock *MockConsul) Start() *httptest.Server {
 	PrefixChannels = make(map[string]chan bool)
 
 	testMockServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		if len(mock.expectedAccessToken) > 0 {
+			token := request.Header.Get(TokenKey)
+			if token != mock.expectedAccessToken {
+				writer.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+		}
+
 		if strings.Contains(request.URL.Path, "/v1/kv/") {
 			key := strings.Replace(request.URL.Path, "/v1/kv/", "", 1)
 
@@ -220,4 +232,12 @@ func (mock *MockConsul) checkForPrefix(prefix string) (consulapi.KVPairs, bool) 
 	}
 	return pairs, true
 
+}
+
+func (mock *MockConsul) SetExpectedAccessToken(token string) {
+	mock.expectedAccessToken = token
+}
+
+func (mock *MockConsul) ClearExpectedAccessToken() {
+	mock.expectedAccessToken = ""
 }

@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2019 Intel Corporation
+// Copyright (c) 2021 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,6 +38,8 @@ type ServiceConfig struct {
 	Type string
 	// BasePath is the base path with in the Configuration service where the your service's configuration is stored
 	BasePath string
+	// AccessToken is the token that is used to access the service configuration
+	AccessToken string
 }
 
 //
