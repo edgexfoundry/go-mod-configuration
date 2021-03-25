@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2019 Intel Corporation
+// Copyright (c) 2021 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,6 +55,7 @@ func NewConsulClient(config types.ServiceConfig) (*consulClient, error) {
 	var err error
 
 	client.consulConfig = consulapi.DefaultConfig()
+	client.consulConfig.Token = config.AccessToken
 	client.consulConfig.Address = client.consulUrl
 	client.consulClient, err = consulapi.NewClient(client.consulConfig)
 	if err != nil {

@@ -23,6 +23,7 @@ type ServiceConfig struct {
 	Port int
 	Type string
 	BasePath string
+	AccessToken string
 }
 ```
 
@@ -43,6 +44,7 @@ func initializeConfiguration(useConfigService bool, useProfile string) (*Configu
             Port:            conf.Configuration.Port,
             Type:            conf.Configuration.Type,
             BasePath:        internal.ConfigStem + internal.MyServiceKey,
+            AccessToken:     <AccessTokenLoadedFromSecretFile>,
         }
 
         ConfigClient, err = configuration.NewConfigurationClient(serviceConfig)

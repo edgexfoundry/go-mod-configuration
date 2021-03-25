@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2019 Intel Corporation
+// Copyright (c) 2021 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package consul
 
 import (
+	"fmt"
 	"log"
 	"net/http/httptest"
 	"net/url"
@@ -29,6 +30,7 @@ import (
 	"github.com/hashicorp/consul/api"
 	"github.com/pelletier/go-toml"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/edgexfoundry/go-mod-configuration/v2/pkg/types"
 )
@@ -78,14 +80,14 @@ func TestMain(m *testing.M) {
 }
 
 func TestIsAlive(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 	if !client.IsAlive() {
 		t.Fatal("Consul not running")
 	}
 }
 
 func TestHasConfigurationFalse(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 
 	// Make sure the configuration doesn't already exists
 	reset(t, client)
@@ -101,7 +103,7 @@ func TestHasConfigurationFalse(t *testing.T) {
 }
 
 func TestHasConfigurationTrue(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 
 	// Make sure the configuration doesn't already exists
 	reset(t, client)
@@ -118,7 +120,7 @@ func TestHasConfigurationTrue(t *testing.T) {
 }
 
 func TestHasConfigurationPartialServiceKey(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 
 	// Make sure the configuration doesn't already exists
 	reset(t, client)
@@ -152,7 +154,7 @@ func TestHasConfigurationError(t *testing.T) {
 		port = goodPort
 	}()
 
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 
 	_, err := client.HasConfiguration()
 	assert.Error(t, err, "expected error checking configuration existence")
@@ -161,7 +163,7 @@ func TestHasConfigurationError(t *testing.T) {
 }
 
 func TestHasSubConfigurationFalse(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 
 	// Make sure the configuration doesn't already exists
 	reset(t, client)
@@ -178,7 +180,7 @@ func TestHasSubConfigurationFalse(t *testing.T) {
 }
 
 func TestHasSubConfigurationTrue(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 
 	// Make sure the configuration doesn't already exists
 	reset(t, client)
@@ -201,7 +203,7 @@ func TestHasSubConfigurationError(t *testing.T) {
 		port = goodPort
 	}()
 
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 
 	_, err := client.HasSubConfiguration("dummy")
 	assert.Error(t, err, "expected error checking configuration existence")
@@ -215,7 +217,7 @@ func TestConfigurationValueExists(t *testing.T) {
 	uniqueServiceName := getUniqueServiceName()
 	fullKey := consulBasePath + uniqueServiceName + "/" + key
 
-	client := makeConsulClient(t, uniqueServiceName)
+	client := makeConsulClient(t, uniqueServiceName, "")
 	expected := false
 
 	// Make sure the configuration doesn't already exists
@@ -254,7 +256,7 @@ func TestGetConfigurationValue(t *testing.T) {
 	expected := []byte("bar")
 	uniqueServiceName := getUniqueServiceName()
 	fullKey := consulBasePath + uniqueServiceName + "/" + key
-	client := makeConsulClient(t, uniqueServiceName)
+	client := makeConsulClient(t, uniqueServiceName, "")
 
 	// Make sure the target key/value exists
 	keyPair := api.KVPair{
@@ -282,7 +284,7 @@ func TestPutConfigurationValue(t *testing.T) {
 	uniqueServiceName := getUniqueServiceName()
 	expectedFullKey := consulBasePath + uniqueServiceName + "/" + key
 
-	client := makeConsulClient(t, uniqueServiceName)
+	client := makeConsulClient(t, uniqueServiceName, "")
 
 	// Make sure the configuration doesn't already exists
 	reset(t, client)
@@ -317,7 +319,7 @@ func TestGetConfiguration(t *testing.T) {
 		LogLevel: "debug",
 	}
 
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 
 	_ = client.PutConfigurationValue("Logging/EnableRemote", []byte(strconv.FormatBool(expected.Logging.EnableRemote)))
 	_ = client.PutConfigurationValue("Logging/File", []byte(expected.Logging.File))
@@ -355,7 +357,7 @@ func TestPutConfiguration(t *testing.T) {
 		LogLevel: "debug",
 	}
 
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 
 	// Make sure the tree of values doesn't exist.
 	_, _ = client.consulClient.KV().DeleteTree(consulBasePath, nil)
@@ -371,6 +373,7 @@ func TestPutConfiguration(t *testing.T) {
 	}
 
 	actual, err := client.HasConfiguration()
+	require.NoError(t, err)
 	if !assert.True(t, actual, "Failed to put configuration") {
 		t.Fail()
 	}
@@ -388,7 +391,7 @@ func configValueSet(key string, client *consulClient) bool {
 }
 
 func TestPutConfigurationTomlNoPreviousValues(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 
 	// Make sure the tree of values doesn't exist.
 	_, _ = client.consulClient.KV().DeleteTree(consulBasePath, nil)
@@ -423,7 +426,7 @@ func TestPutConfigurationTomlNoPreviousValues(t *testing.T) {
 }
 
 func TestPutConfigurationTomlWithoutOverWrite(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 
 	// Make sure the tree of values doesn't exist.
 	_, _ = client.consulClient.KV().DeleteTree(consulBasePath, nil)
@@ -470,7 +473,7 @@ func TestPutConfigurationTomlWithoutOverWrite(t *testing.T) {
 }
 
 func TestPutConfigurationTomlOverWrite(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 
 	// Make sure the tree of values doesn't exist.
 	_, _ = client.consulClient.KV().DeleteTree(consulBasePath, nil)
@@ -527,7 +530,7 @@ func TestWatchForChanges(t *testing.T) {
 
 	expectedChange := "random"
 
-	client := makeConsulClient(t, getUniqueServiceName())
+	client := makeConsulClient(t, getUniqueServiceName(), "")
 
 	// Make sure the tree of values doesn't exist.
 	_, _ = client.consulClient.KV().DeleteTree(consulBasePath, nil)
@@ -581,11 +584,33 @@ func TestWatchForChanges(t *testing.T) {
 	}
 }
 
-func makeConsulClient(t *testing.T, serviceName string) *consulClient {
+func TestAccessToken(t *testing.T) {
+	uniqueServiceName := getUniqueServiceName()
+	client := makeConsulClient(t, uniqueServiceName, "")
+
+	valueName := "testAccess"
+	// Test if have access to endpoint w/o access token set
+
+	_, err := client.GetConfigurationValue(valueName)
+	require.NoError(t, err)
+
+	expectedToken := "MyAccessToken"
+	mockConsul.SetExpectedAccessToken(expectedToken)
+	defer mockConsul.ClearExpectedAccessToken()
+
+	// Now verify get error w/o providing the expected access token
+	_, err = client.GetConfigurationValue(valueName)
+	require.Error(t, err)
+	expectedErrMsg := fmt.Sprintf("unable to get value for %s from Consul: Unexpected response code: 401", client.fullPath(valueName))
+	require.EqualError(t, err, expectedErrMsg)
+}
+
+func makeConsulClient(t *testing.T, serviceName string, accessToken string) *consulClient {
 	config := types.ServiceConfig{
-		Host:     testHost,
-		Port:     port,
-		BasePath: "edgex/core/1.0/" + serviceName,
+		Host:        testHost,
+		Port:        port,
+		BasePath:    "edgex/core/1.0/" + serviceName,
+		AccessToken: accessToken,
 	}
 
 	client, err := NewConsulClient(config)

@@ -26,7 +26,7 @@ import (
 func NewConfigurationClient(config types.ServiceConfig) (Client, error) {
 
 	if config.Host == "" || config.Port == 0 {
-		return nil, fmt.Errorf("unable to create Configuation Client: Configuation service host and/or port or serviceKey not set")
+		return nil, fmt.Errorf("unable to create Configuration Client: Configuration service host and/or port or serviceKey not set")
 	}
 
 	switch config.Type {
