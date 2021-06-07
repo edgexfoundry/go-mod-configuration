@@ -5,7 +5,7 @@ require (
 	github.com/hashicorp/consul/api v1.8.1
 	github.com/mitchellh/consulstructure v0.0.0-20190329231841-56fdc4d2da54
 	github.com/mitchellh/copystructure v1.0.0 // indirect
-	github.com/pelletier/go-toml v1.9.1
+	github.com/pelletier/go-toml v1.9.2
 	github.com/stretchr/testify v1.7.0
 )
 
