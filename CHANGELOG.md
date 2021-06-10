@@ -3,7 +3,7 @@
 ## Configuration Module (in Go)
 [Github repository](https://github.com/edgexfoundry/go-mod-configuration)
 
-## [2.0.0] - 2021-06-10
+## [2.0.0] - 2021-06-30
 ### Features ✨
 - **configuration:** Add new HasSubConfiguration(name string) API ([#d38a7b9](https://github.com/edgexfoundry/go-mod-configuration/commits/d38a7b9))
 - **security:** add support for ACL access token ([#94e2211](https://github.com/edgexfoundry/go-mod-configuration/commits/94e2211))
