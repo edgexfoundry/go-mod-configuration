@@ -21,37 +21,40 @@ import (
 )
 
 type Client interface {
-	// Checks to see if the Configuration service contains the service's configuration.
+	// HasConfiguration checks to see if the Configuration service contains the service's configuration.
 	HasConfiguration() (bool, error)
 
-	// Checks to see if the Configuration service contains the service's sub configuration.
+	// HasSubConfiguration checks to see if the Configuration service contains the service's sub configuration.
 	HasSubConfiguration(name string) (bool, error)
 
-	// Puts a full toml configuration into the Configuration service
+	// PutConfigurationToml puts a full toml configuration into the Configuration service
 	PutConfigurationToml(configuration *toml.Tree, overwrite bool) error
 
-	// Puts a full configuration struct into the Configuration service
+	// PutConfiguration puts a full configuration struct into the Configuration service
 	PutConfiguration(configStruct interface{}, overwrite bool) error
 
-	// Gets the full configuration from Consul into the target configuration struct.
+	// GetConfiguration gets the full configuration from Consul into the target configuration struct.
 	// Passed in struct is only a reference for Configuration service. Empty struct is fine
 	// Returns the configuration in the target struct as interface{}, which caller must cast
 	GetConfiguration(configStruct interface{}) (interface{}, error)
 
-	// Sets up a Consul watch for the target key and send back updates on the update channel.
+	// WatchForChanges sets up a Consul watch for the target key and send back updates on the update channel.
 	// Passed in struct is only a reference for Configuration service, empty struct is ok
 	// Sends the configuration in the target struct as interface{} on updateChannel, which caller must cast
 	WatchForChanges(updateChannel chan<- interface{}, errorChannel chan<- error, configuration interface{}, waitKey string)
 
-	// Simply checks if Configuration service is up and running at the configured URL
+	// StopWatching causes all WatchForChanges processing to stop and waits until they have stopped.
+	StopWatching()
+
+	// IsAlive simply checks if Configuration service is up and running at the configured URL
 	IsAlive() bool
 
-	// Checks if a configuration value exists in the Configuration service
+	// ConfigurationValueExists checks if a configuration value exists in the Configuration service
 	ConfigurationValueExists(name string) (bool, error)
 
-	// Gets a specific configuration value from the Configuration service
+	// GetConfigurationValue gets a specific configuration value from the Configuration service
 	GetConfigurationValue(name string) ([]byte, error)
 
-	// Puts a specific configuration value into the Configuration service
+	// PutConfigurationValue puts a specific configuration value into the Configuration service
 	PutConfigurationValue(name string, value []byte) error
 }
