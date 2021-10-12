@@ -24,6 +24,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -80,14 +81,14 @@ func TestMain(m *testing.M) {
 }
 
 func TestIsAlive(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 	if !client.IsAlive() {
 		t.Fatal("Consul not running")
 	}
 }
 
 func TestHasConfigurationFalse(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 
 	// Make sure the configuration doesn't already exists
 	reset(t, client)
@@ -103,7 +104,7 @@ func TestHasConfigurationFalse(t *testing.T) {
 }
 
 func TestHasConfigurationTrue(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 
 	// Make sure the configuration doesn't already exists
 	reset(t, client)
@@ -120,7 +121,7 @@ func TestHasConfigurationTrue(t *testing.T) {
 }
 
 func TestHasConfigurationPartialServiceKey(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 
 	// Make sure the configuration doesn't already exists
 	reset(t, client)
@@ -154,7 +155,7 @@ func TestHasConfigurationError(t *testing.T) {
 		port = goodPort
 	}()
 
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 
 	_, err := client.HasConfiguration()
 	assert.Error(t, err, "expected error checking configuration existence")
@@ -163,7 +164,7 @@ func TestHasConfigurationError(t *testing.T) {
 }
 
 func TestHasSubConfigurationFalse(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 
 	// Make sure the configuration doesn't already exists
 	reset(t, client)
@@ -180,7 +181,7 @@ func TestHasSubConfigurationFalse(t *testing.T) {
 }
 
 func TestHasSubConfigurationTrue(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 
 	// Make sure the configuration doesn't already exists
 	reset(t, client)
@@ -203,7 +204,7 @@ func TestHasSubConfigurationError(t *testing.T) {
 		port = goodPort
 	}()
 
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 
 	_, err := client.HasSubConfiguration("dummy")
 	assert.Error(t, err, "expected error checking configuration existence")
@@ -217,7 +218,7 @@ func TestConfigurationValueExists(t *testing.T) {
 	uniqueServiceName := getUniqueServiceName()
 	fullKey := consulBasePath + uniqueServiceName + "/" + key
 
-	client := makeConsulClient(t, uniqueServiceName, "")
+	client := makeConsulClient(t, uniqueServiceName, "", nil)
 	expected := false
 
 	// Make sure the configuration doesn't already exists
@@ -256,7 +257,7 @@ func TestGetConfigurationValue(t *testing.T) {
 	expected := []byte("bar")
 	uniqueServiceName := getUniqueServiceName()
 	fullKey := consulBasePath + uniqueServiceName + "/" + key
-	client := makeConsulClient(t, uniqueServiceName, "")
+	client := makeConsulClient(t, uniqueServiceName, "", nil)
 
 	// Make sure the target key/value exists
 	keyPair := api.KVPair{
@@ -284,7 +285,7 @@ func TestPutConfigurationValue(t *testing.T) {
 	uniqueServiceName := getUniqueServiceName()
 	expectedFullKey := consulBasePath + uniqueServiceName + "/" + key
 
-	client := makeConsulClient(t, uniqueServiceName, "")
+	client := makeConsulClient(t, uniqueServiceName, "", nil)
 
 	// Make sure the configuration doesn't already exists
 	reset(t, client)
@@ -319,7 +320,7 @@ func TestGetConfiguration(t *testing.T) {
 		LogLevel: "debug",
 	}
 
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 
 	_ = client.PutConfigurationValue("Logging/EnableRemote", []byte(strconv.FormatBool(expected.Logging.EnableRemote)))
 	_ = client.PutConfigurationValue("Logging/File", []byte(expected.Logging.File))
@@ -357,7 +358,7 @@ func TestPutConfiguration(t *testing.T) {
 		LogLevel: "debug",
 	}
 
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 
 	// Make sure the tree of values doesn't exist.
 	_, _ = client.consulClient.KV().DeleteTree(consulBasePath, nil)
@@ -391,7 +392,7 @@ func configValueSet(key string, client *consulClient) bool {
 }
 
 func TestPutConfigurationTomlNoPreviousValues(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 
 	// Make sure the tree of values doesn't exist.
 	_, _ = client.consulClient.KV().DeleteTree(consulBasePath, nil)
@@ -426,7 +427,7 @@ func TestPutConfigurationTomlNoPreviousValues(t *testing.T) {
 }
 
 func TestPutConfigurationTomlWithoutOverWrite(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 
 	// Make sure the tree of values doesn't exist.
 	_, _ = client.consulClient.KV().DeleteTree(consulBasePath, nil)
@@ -473,7 +474,7 @@ func TestPutConfigurationTomlWithoutOverWrite(t *testing.T) {
 }
 
 func TestPutConfigurationTomlOverWrite(t *testing.T) {
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 
 	// Make sure the tree of values doesn't exist.
 	_, _ = client.consulClient.KV().DeleteTree(consulBasePath, nil)
@@ -530,7 +531,7 @@ func TestWatchForChanges(t *testing.T) {
 
 	expectedChange := "random"
 
-	client := makeConsulClient(t, getUniqueServiceName(), "")
+	client := makeConsulClient(t, getUniqueServiceName(), "", nil)
 
 	// Make sure the tree of values doesn't exist.
 	_, _ = client.consulClient.KV().DeleteTree(consulBasePath, nil)
@@ -586,7 +587,7 @@ func TestWatchForChanges(t *testing.T) {
 
 func TestAccessToken(t *testing.T) {
 	uniqueServiceName := getUniqueServiceName()
-	client := makeConsulClient(t, uniqueServiceName, "")
+	client := makeConsulClient(t, uniqueServiceName, "", nil)
 
 	valueName := "testAccess"
 	// Test if have access to endpoint w/o access token set
@@ -601,16 +602,17 @@ func TestAccessToken(t *testing.T) {
 	// Now verify get error w/o providing the expected access token
 	_, err = client.GetConfigurationValue(valueName)
 	require.Error(t, err)
-	expectedErrMsg := fmt.Sprintf("unable to get value for %s from Consul: Unexpected response code: 401", client.fullPath(valueName))
+	expectedErrMsg := fmt.Sprintf("unable to get value for %s from Consul: Unexpected response code: 403", client.fullPath(valueName))
 	require.EqualError(t, err, expectedErrMsg)
 }
 
-func makeConsulClient(t *testing.T, serviceName string, accessToken string) *consulClient {
+func makeConsulClient(t *testing.T, serviceName string, accessToken string, tokenCallback types.GetAccessTokenCallback) *consulClient {
 	config := types.ServiceConfig{
-		Host:        testHost,
-		Port:        port,
-		BasePath:    "edgex/core/1.0/" + serviceName,
-		AccessToken: accessToken,
+		Host:           testHost,
+		Port:           port,
+		BasePath:       "edgex/core/1.0/" + serviceName,
+		AccessToken:    accessToken,
+		GetAccessToken: tokenCallback,
 	}
 
 	client, err := NewConsulClient(config)
@@ -652,4 +654,156 @@ func reset(t *testing.T, client *consulClient) {
 
 func getUniqueServiceName() string {
 	return serviceName + strconv.Itoa(time.Now().Nanosecond())
+}
+
+func TestRenewAccessToken(t *testing.T) {
+	goodToken := "bfb78dc5-c6a3-33d9-88b5-e3a4b63dda77"
+	badToken := "badToken-c6a3-33d9-88b5-e3a4b63dda77"
+	serviceName := "RenewAccessToken-Test"
+
+	getAccessToken := func() (string, error) {
+		fmt.Println("RenewAccessToken called")
+		return goodToken, nil
+	}
+
+	createClient := func(resetConfig bool) *consulClient {
+		client := makeConsulClient(t, serviceName, badToken, getAccessToken)
+		if resetConfig {
+			reset(t, client)
+		}
+		mockConsul.SetExpectedAccessToken(goodToken)
+		return client
+	}
+
+	myConfig := MyConfig{
+		Logging: LoggingInfo{
+			EnableRemote: false,
+			File:         "",
+		},
+		Port:     678,
+		Host:     "Local",
+		LogLevel: "Infinity",
+	}
+
+	putTestConfig := func() {
+		// Put the configuration so we can test the GET
+		client := makeConsulClient(t, serviceName, "", nil)
+		mockConsul.SetExpectedAccessToken("")
+		err := client.PutConfiguration(&myConfig, true)
+		require.NoError(t, err)
+	}
+
+	t.Run("PutConfigurationValue", func(t *testing.T) {
+		client := createClient(true)
+
+		err := client.PutConfigurationValue("Host", []byte("Hello"))
+		require.NoError(t, err)
+	})
+
+	t.Run("PutConfiguration", func(t *testing.T) {
+		client := createClient(true)
+
+		err := client.PutConfiguration(&myConfig, true)
+		require.NoError(t, err)
+	})
+
+	t.Run("ConfigurationValueExists", func(t *testing.T) {
+		client := createClient(true)
+
+		_, err := client.ConfigurationValueExists("Host")
+		require.NoError(t, err)
+	})
+
+	t.Run("HasConfiguration", func(t *testing.T) {
+		client := createClient(true)
+
+		_, err := client.HasConfiguration()
+		require.NoError(t, err)
+	})
+
+	t.Run("GetConfiguration", func(t *testing.T) {
+		putTestConfig()
+		client := createClient(false)
+
+		_, err := client.GetConfiguration(&myConfig)
+		require.NoError(t, err)
+	})
+
+	t.Run("GetConfigurationValue", func(t *testing.T) {
+		putTestConfig()
+		client := createClient(false)
+
+		_, err := client.GetConfigurationValue("Host")
+		require.NoError(t, err)
+	})
+
+	t.Run("HasSubConfiguration", func(t *testing.T) {
+		client := createClient(true)
+
+		_, err := client.HasSubConfiguration("Logging")
+		require.NoError(t, err)
+	})
+
+	t.Run("WatchForChanges", func(t *testing.T) {
+		putTestConfig()
+		client := createClient(false)
+
+		receivedUpdate := false
+
+		updates := make(chan interface{})
+		errs := make(chan error)
+		client.WatchForChanges(updates, errs, &myConfig, "Logging")
+
+		wg := sync.WaitGroup{}
+		wg.Add(1)
+		go func() {
+			for {
+				select {
+				case <-time.Tick(5 * time.Second):
+					wg.Done()
+					return
+
+				case ex := <-errs:
+					require.NoError(t, ex)
+
+				case raw, ok := <-updates:
+					if !ok {
+						return
+					}
+					require.NotNil(t, raw)
+					wg.Done()
+					receivedUpdate = true
+					fmt.Println("WatchForChanges update received")
+					return
+				}
+			}
+		}()
+
+		// simulate change in writable section.
+		err := client.PutConfigurationValue("LogLevel", []byte("DEBUG"))
+		require.NoError(t, err)
+
+		wg.Wait()
+
+		assert.True(t, receivedUpdate)
+	})
+
+	t.Run("StopWatching", func(t *testing.T) {
+		putTestConfig()
+		client := createClient(false)
+
+		allStopped := false
+		updates := make(chan interface{})
+		errs := make(chan error)
+		client.WatchForChanges(updates, errs, &myConfig, "Host")
+		client.WatchForChanges(updates, errs, &myConfig, "LogLevel")
+
+		go func() {
+			client.StopWatching()
+			allStopped = true
+		}()
+
+		<-time.Tick(2 * time.Second)
+		assert.True(t, allStopped)
+	})
 }

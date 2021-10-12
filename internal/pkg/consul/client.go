@@ -17,11 +17,13 @@
 package consul
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	consulapi "github.com/hashicorp/consul/api"
@@ -31,22 +33,32 @@ import (
 	"github.com/edgexfoundry/go-mod-configuration/v2/pkg/types"
 )
 
-const consulStatusPath = "/v1/status/leader"
+const (
+	consulStatusPath = "/v1/status/leader"
+	aclError         = "Unexpected response code: 403"
+)
 
 type consulClient struct {
-	consulUrl      string
-	consulClient   *consulapi.Client
-	consulConfig   *consulapi.Config
-	configBasePath string
+	consulUrl       string
+	consulClient    *consulapi.Client
+	consulConfig    *consulapi.Config
+	configBasePath  string
+	watchingDoneCtx context.Context
+	watchingDone    context.CancelFunc
+	watchingWait    sync.WaitGroup
+	getAccessToken  types.GetAccessTokenCallback
 }
 
-// Create new Consul Client. Service details are optional, not needed just for configuration, but required if registering
+// NewConsulClient creates a new Consul Client. Service details are optional, not needed just for configuration, but required if registering
 func NewConsulClient(config types.ServiceConfig) (*consulClient, error) {
 
 	client := consulClient{
 		consulUrl:      config.GetUrl(),
 		configBasePath: config.BasePath,
+		getAccessToken: config.GetAccessToken,
 	}
+
+	client.watchingDoneCtx, client.watchingDone = context.WithCancel(context.Background())
 
 	if len(client.configBasePath) > 0 && client.configBasePath[len(client.configBasePath)-1:] != "/" {
 		client.configBasePath = client.configBasePath + "/"
@@ -57,18 +69,29 @@ func NewConsulClient(config types.ServiceConfig) (*consulClient, error) {
 	client.consulConfig = consulapi.DefaultConfig()
 	client.consulConfig.Token = config.AccessToken
 	client.consulConfig.Address = client.consulUrl
-	client.consulClient, err = consulapi.NewClient(client.consulConfig)
+	err = client.createConsulClient()
 	if err != nil {
-		return nil, fmt.Errorf("unable for create new Consul Client for %s: %v", client.consulUrl, err)
+		return nil, err
 	}
 
 	return &client, nil
 }
 
-// Simply checks if Consul is up and running at the configured URL
+func (client *consulClient) createConsulClient() error {
+	var err error
+	client.consulClient, err = consulapi.NewClient(client.consulConfig)
+	if err != nil {
+		return fmt.Errorf("unable for create new Consul Client for %s: %v", client.consulUrl, err)
+	}
+
+	return nil
+}
+
+// IsAlive simply checks if Consul is up and running at the configured URL
 func (client *consulClient) IsAlive() bool {
 	netClient := http.Client{Timeout: time.Second * 10}
 
+	// This REST endpoint doesn't require Access Token, so no need to handle Auth Error.
 	resp, err := netClient.Get(client.consulUrl + consulStatusPath)
 	if err != nil {
 		return false
@@ -81,29 +104,43 @@ func (client *consulClient) IsAlive() bool {
 	return false
 }
 
-// Checks to see if Consul contains the service's configuration.
+// HasConfiguration checks to see if Consul contains the service's configuration.
 func (client *consulClient) HasConfiguration() (bool, error) {
-	if stemKeys, _, err := client.consulClient.KV().Keys(client.configBasePath, "", nil); err != nil {
+	stemKeys, _, err := client.consulClient.KV().Keys(client.configBasePath, "", nil)
+	retry, err := client.reloadAccessTokenOnAuthError(err)
+	if retry {
+		// Try again with new Access Token
+		stemKeys, _, err = client.consulClient.KV().Keys(client.configBasePath, "", nil)
+	}
+
+	if err != nil {
 		return false, fmt.Errorf("checking configuration existence from Consul failed: %v", err)
 	} else if len(stemKeys) == 0 {
 		return false, nil
-	} else {
-		return true, nil
 	}
+
+	return true, nil
 }
 
-// Checks to see if the Configuration service contains the service's sub configuration.
+// HasSubConfiguration checks to see if the Configuration service contains the service's sub configuration.
 func (client *consulClient) HasSubConfiguration(name string) (bool, error) {
-	if stemKeys, _, err := client.consulClient.KV().Keys(client.fullPath(name), "", nil); err != nil {
+	stemKeys, _, err := client.consulClient.KV().Keys(client.fullPath(name), "", nil)
+	retry, err := client.reloadAccessTokenOnAuthError(err)
+	if retry {
+		// Try again with new Access Token
+		stemKeys, _, err = client.consulClient.KV().Keys(client.fullPath(name), "", nil)
+	}
+
+	if err != nil {
 		return false, fmt.Errorf("checking sub configuration existence from Consul failed: %v", err)
 	} else if len(stemKeys) == 0 {
 		return false, nil
-	} else {
-		return true, nil
 	}
+
+	return true, nil
 }
 
-// Puts a full toml configuration into Consul
+// PutConfigurationToml puts a full toml configuration into Consul
 func (client *consulClient) PutConfigurationToml(configuration *toml.Tree, overwrite bool) error {
 
 	configurationMap := configuration.ToMap()
@@ -122,7 +159,7 @@ func (client *consulClient) PutConfigurationToml(configuration *toml.Tree, overw
 	return nil
 }
 
-// Puts a full configuration struct into the Configuration provider
+// PutConfiguration puts a full configuration struct into the Configuration provider
 func (client *consulClient) PutConfiguration(configuration interface{}, overwrite bool) error {
 	bytes, err := toml.Marshal(configuration)
 	if err != nil {
@@ -143,7 +180,7 @@ func (client *consulClient) PutConfiguration(configuration interface{}, overwrit
 
 }
 
-// Gets the full configuration from Consul into the target configuration struct.
+// GetConfiguration gets the full configuration from Consul into the target configuration struct.
 // Passed in struct is only a reference for decoder, empty struct is ok
 // Returns the configuration in the target struct as interface{}, which caller must cast
 func (client *consulClient) GetConfiguration(configStruct interface{}) (interface{}, error) {
@@ -171,7 +208,7 @@ func (client *consulClient) GetConfiguration(configStruct interface{}) (interfac
 	decoder.UpdateCh = updateChannel
 
 	defer func() {
-		decoder.Close()
+		_ = decoder.Close()
 		close(updateChannel)
 		close(errorChannel)
 	}()
@@ -190,7 +227,7 @@ func (client *consulClient) GetConfiguration(configStruct interface{}) (interfac
 	return configuration, err
 }
 
-// Sets up a Consul watch for the target key and send back updates on the update channel.
+// WatchForChanges sets up a Consul watch for the target key and send back updates on the update channel.
 // Passed in struct is only a reference for decoder, empty struct is ok
 // Sends the configuration in the target struct as interface{} on updateChannel, which caller must cast
 func (client *consulClient) WatchForChanges(updateChannel chan<- interface{}, errorChannel chan<- error, configuration interface{}, watchKey string) {
@@ -199,28 +236,72 @@ func (client *consulClient) WatchForChanges(updateChannel chan<- interface{}, er
 		watchKey = watchKey[1:]
 	}
 
+	errs := make(chan error)
 	decoder := client.newConsulDecoder()
 	decoder.Consul = client.consulConfig
 	decoder.Target = configuration
 	decoder.Prefix = client.configBasePath + watchKey
-	decoder.ErrCh = errorChannel
+	decoder.ErrCh = errs
 	decoder.UpdateCh = updateChannel
 
 	go decoder.Run()
+	client.watchingWait.Add(1)
+
+	go func() {
+		for {
+			select {
+			case <-client.watchingDoneCtx.Done():
+				_ = decoder.Close() // Func always return nil for error so ignoring the return value
+				client.watchingWait.Done()
+				return
+
+			case err := <-errs:
+				retry, err := client.reloadAccessTokenOnAuthError(err)
+				if retry {
+					_ = decoder.Close() // Func always return nil for error so ignoring the return value
+					decoder.Consul = client.consulConfig
+					go decoder.Run()
+				} else {
+					errorChannel <- err
+				}
+			}
+		}
+	}()
 }
 
-// Checks if a configuration value exists in Consul
+// StopWatching causes all WatchForChanges processing to stop and waits until they have exited.
+func (client *consulClient) StopWatching() {
+	client.watchingDone()
+	client.watchingWait.Wait()
+}
+
+// ConfigurationValueExists checks if a configuration value exists in Consul
 func (client *consulClient) ConfigurationValueExists(name string) (bool, error) {
 	keyPair, _, err := client.consulClient.KV().Get(client.fullPath(name), nil)
+
+	retry, err := client.reloadAccessTokenOnAuthError(err)
+	if retry {
+		// Try again with new Access Token
+		keyPair, _, err = client.consulClient.KV().Get(client.fullPath(name), nil)
+	}
+
 	if err != nil {
 		return false, fmt.Errorf("unable to check existence of %s in Consul: %v", client.fullPath(name), err)
 	}
+
 	return keyPair != nil, nil
 }
 
-// Gets a specific configuration value from Consul
+// GetConfigurationValue gets a specific configuration value from Consul
 func (client *consulClient) GetConfigurationValue(name string) ([]byte, error) {
 	keyPair, _, err := client.consulClient.KV().Get(client.fullPath(name), nil)
+
+	retry, err := client.reloadAccessTokenOnAuthError(err)
+	if retry {
+		// Try again with new Access Token
+		keyPair, _, err = client.consulClient.KV().Get(client.fullPath(name), nil)
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("unable to get value for %s from Consul: %v", client.fullPath(name), err)
 	}
@@ -232,7 +313,7 @@ func (client *consulClient) GetConfigurationValue(name string) ([]byte, error) {
 	return keyPair.Value, nil
 }
 
-// Puts a specific configuration value into Consul
+// PutConfigurationValue puts a specific configuration value into Consul
 func (client *consulClient) PutConfigurationValue(name string, value []byte) error {
 	keyPair := &consulapi.KVPair{
 		Key:   client.fullPath(name),
@@ -240,10 +321,44 @@ func (client *consulClient) PutConfigurationValue(name string, value []byte) err
 	}
 
 	_, err := client.consulClient.KV().Put(keyPair, nil)
+
+	retry, err := client.reloadAccessTokenOnAuthError(err)
+	if retry {
+		// Try again with new Access Token
+		_, err = client.consulClient.KV().Put(keyPair, nil)
+	}
+
 	if err != nil {
 		return fmt.Errorf("unable to put value for %s into Consul: %v", client.fullPath(name), err)
 	}
+
 	return nil
+}
+
+func (client *consulClient) reloadAccessTokenOnAuthError(err error) (bool, error) {
+	if err == nil {
+		return false, nil
+	}
+
+	if strings.Contains(err.Error(), aclError) && client.getAccessToken != nil {
+		newToken, err := client.getAccessToken()
+		if err != nil {
+			err = fmt.Errorf("failed to renew access token: %s", err.Error())
+			return false, err
+		}
+
+		client.consulConfig.Token = newToken
+
+		// Have to recreate the consul client with the new Access Token
+		err = client.createConsulClient()
+		if err != nil {
+			return false, err
+		}
+
+		return true, nil
+	}
+
+	return false, err
 }
 
 func (client *consulClient) fullPath(name string) string {

@@ -25,6 +25,8 @@ import (
 
 const DefaultProtocol = "http"
 
+type GetAccessTokenCallback func() (string, error)
+
 // ServiceConfig defines the information need to connect to the Configuration service and optionally register the service
 // for discovery and health checks
 type ServiceConfig struct {
@@ -40,6 +42,9 @@ type ServiceConfig struct {
 	BasePath string
 	// AccessToken is the token that is used to access the service configuration
 	AccessToken string
+	// GetAccessToken is a callback function that retrieves a new Access Token.
+	// This callback is used when a '403 Forbidden' status is received from any call to the configuration provider service.
+	GetAccessToken GetAccessTokenCallback
 }
 
 //
