@@ -608,10 +608,10 @@ func TestAccessToken(t *testing.T) {
 
 func makeConsulClient(t *testing.T, serviceName string, accessToken string, tokenCallback types.GetAccessTokenCallback) *consulClient {
 	config := types.ServiceConfig{
-		Host:        testHost,
-		Port:        port,
-		BasePath:    "edgex/core/1.0/" + serviceName,
-		AccessToken: accessToken,
+		Host:           testHost,
+		Port:           port,
+		BasePath:       "edgex/core/1.0/" + serviceName,
+		AccessToken:    accessToken,
 		GetAccessToken: tokenCallback,
 	}
 
@@ -803,7 +803,7 @@ func TestRenewAccessToken(t *testing.T) {
 			allStopped = true
 		}()
 
-		<- time.Tick(2 * time.Second)
+		<-time.Tick(2 * time.Second)
 		assert.True(t, allStopped)
 	})
 }

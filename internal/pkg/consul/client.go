@@ -35,19 +35,18 @@ import (
 
 const (
 	consulStatusPath = "/v1/status/leader"
-	aclError = "Unexpected response code: 403"
+	aclError         = "Unexpected response code: 403"
 )
 
-
 type consulClient struct {
-	consulUrl      string
-	consulClient   *consulapi.Client
-	consulConfig   *consulapi.Config
-	configBasePath string
+	consulUrl       string
+	consulClient    *consulapi.Client
+	consulConfig    *consulapi.Config
+	configBasePath  string
 	watchingDoneCtx context.Context
-	watchingDone context.CancelFunc
-	watchingWait   sync.WaitGroup
-	getAccessToken types.GetAccessTokenCallback
+	watchingDone    context.CancelFunc
+	watchingWait    sync.WaitGroup
+	getAccessToken  types.GetAccessTokenCallback
 }
 
 // NewConsulClient creates a new Consul Client. Service details are optional, not needed just for configuration, but required if registering
@@ -105,7 +104,6 @@ func (client *consulClient) IsAlive() bool {
 	return false
 }
 
-
 // HasConfiguration checks to see if Consul contains the service's configuration.
 func (client *consulClient) HasConfiguration() (bool, error) {
 	stemKeys, _, err := client.consulClient.KV().Keys(client.configBasePath, "", nil)
@@ -123,7 +121,6 @@ func (client *consulClient) HasConfiguration() (bool, error) {
 
 	return true, nil
 }
-
 
 // HasSubConfiguration checks to see if the Configuration service contains the service's sub configuration.
 func (client *consulClient) HasSubConfiguration(name string) (bool, error) {
@@ -344,11 +341,13 @@ func (client *consulClient) reloadAccessTokenOnAuthError(err error) (bool, error
 	}
 
 	if strings.Contains(err.Error(), aclError) && client.getAccessToken != nil {
-		client.consulConfig.Token, err = client.getAccessToken()
+		newToken, err := client.getAccessToken()
 		if err != nil {
 			err = fmt.Errorf("failed to renew access token: %s", err.Error())
 			return false, err
 		}
+
+		client.consulConfig.Token = newToken
 
 		// Have to recreate the consul client with the new Access Token
 		err = client.createConsulClient()
