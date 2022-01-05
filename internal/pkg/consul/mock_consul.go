@@ -31,7 +31,7 @@ import (
 
 const (
 	verbose  = false
-	TokenKey = "X-Consul-Token"
+	TokenKey = "X-Consul-Token" // nolint: gosec
 )
 
 type MockConsul struct {
@@ -120,7 +120,7 @@ func (mock *MockConsul) Start() *httptest.Server {
 				var pairs consulapi.KVPairs
 				var prefixFound bool
 				query := request.URL.Query()
-				waitTime := query.Get("wait")
+
 				// Recurse parameters are usually set when prefix is monitored,
 				// if found we need to find all keys with prefix set in URL.
 				_, recurseFound := query["recurse"]
@@ -132,7 +132,7 @@ func (mock *MockConsul) Start() *httptest.Server {
 						return
 					}
 					//Default wait time is 30 minutes, over riding it for unit test purpose
-					waitTime = "1s"
+					waitTime := "1s"
 					if waitTime != "" {
 						waitForNextPutPrefix(key, waitTime)
 					}
