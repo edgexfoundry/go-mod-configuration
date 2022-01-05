@@ -378,37 +378,37 @@ func convertInterfaceToConsulPairs(path string, interfaceMap interface{}) []*pai
 		pathPre = path + "/"
 	}
 
-	switch interfaceMap.(type) {
+	switch value := interfaceMap.(type) {
 	case []interface{}:
-		for index, item := range interfaceMap.([]interface{}) {
+		for index, item := range value {
 			nextPairs := convertInterfaceToConsulPairs(pathPre+strconv.Itoa(index), item)
 			pairs = append(pairs, nextPairs...)
 		}
 
 	case map[string]interface{}:
-		for index, item := range interfaceMap.(map[string]interface{}) {
+		for index, item := range value {
 			nextPairs := convertInterfaceToConsulPairs(pathPre+index, item)
 			pairs = append(pairs, nextPairs...)
 		}
 
 	case int:
-		pairs = append(pairs, &pair{Key: path, Value: strconv.Itoa(interfaceMap.(int))})
-
-	case int64:
-		var value = int(interfaceMap.(int64))
 		pairs = append(pairs, &pair{Key: path, Value: strconv.Itoa(value)})
 
+	case int64:
+		var value64 = int(value)
+		pairs = append(pairs, &pair{Key: path, Value: strconv.Itoa(value64)})
+
 	case float64:
-		pairs = append(pairs, &pair{Key: path, Value: strconv.FormatFloat(interfaceMap.(float64), 'f', -1, 64)})
+		pairs = append(pairs, &pair{Key: path, Value: strconv.FormatFloat(value, 'f', -1, 64)})
 
 	case bool:
-		pairs = append(pairs, &pair{Key: path, Value: strconv.FormatBool(interfaceMap.(bool))})
+		pairs = append(pairs, &pair{Key: path, Value: strconv.FormatBool(value)})
 
 	case nil:
 		pairs = append(pairs, &pair{Key: path, Value: ""})
 
 	default:
-		pairs = append(pairs, &pair{Key: path, Value: interfaceMap.(string)})
+		pairs = append(pairs, &pair{Key: path, Value: value.(string)})
 	}
 
 	return pairs
