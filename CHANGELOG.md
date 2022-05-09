@@ -3,6 +3,16 @@
 ## Configuration Module (in Go)
 [Github repository](https://github.com/edgexfoundry/go-mod-configuration)
 
+## [v2.2.0] - 2022-05-11
+
+### Features ✨
+
+- None
+
+### Build 👷
+
+- **security:** Enable gosec and default linter set ([#67a3dcd](https://github.com/edgexfoundry/go-mod-configuration/commits/67a3dcd))
+
 ## [v2.1.0] - 2021-11-17
 
 ### Features ✨
