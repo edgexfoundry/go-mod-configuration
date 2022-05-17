@@ -588,7 +588,7 @@ func TestWatchForChanges(t *testing.T) {
 func TestAccessToken(t *testing.T) {
 	uniqueServiceName := getUniqueServiceName()
 	client := makeConsulClient(t, uniqueServiceName, "", nil)
-
+	expectedErrMsg := "Unexpected response code: 403"
 	valueName := "testAccess"
 	// Test if have access to endpoint w/o access token set
 
@@ -602,8 +602,7 @@ func TestAccessToken(t *testing.T) {
 	// Now verify get error w/o providing the expected access token
 	_, err = client.GetConfigurationValue(valueName)
 	require.Error(t, err)
-	expectedErrMsg := fmt.Sprintf("unable to get value for %s from Consul: Unexpected response code: 403", client.fullPath(valueName))
-	require.EqualError(t, err, expectedErrMsg)
+	require.Contains(t, err.Error(), expectedErrMsg)
 }
 
 func makeConsulClient(t *testing.T, serviceName string, accessToken string, tokenCallback types.GetAccessTokenCallback) *consulClient {
