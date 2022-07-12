@@ -1,5 +1,7 @@
 module github.com/edgexfoundry/go-mod-configuration/v2
 
+go 1.18
+
 require (
 	github.com/hashicorp/consul/api v1.12.0
 	github.com/mitchellh/consulstructure v0.0.0-20190329231841-56fdc4d2da54
@@ -28,5 +30,3 @@ require (
 	golang.org/x/sys v0.0.0-20210330210617-4fbd30eecc44 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 )
-
-go 1.17
