@@ -1,10 +1,12 @@
 module github.com/edgexfoundry/go-mod-configuration/v2
 
+go 1.18
+
 require (
-	github.com/hashicorp/consul/api v1.13.0
+	github.com/hashicorp/consul/api v1.12.0
 	github.com/mitchellh/consulstructure v0.0.0-20190329231841-56fdc4d2da54
-	github.com/pelletier/go-toml v1.9.5
-	github.com/stretchr/testify v1.8.0
+	github.com/pelletier/go-toml v1.9.4
+	github.com/stretchr/testify v1.7.0
 )
 
 require (
@@ -26,7 +28,5 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/sys v0.0.0-20210330210617-4fbd30eecc44 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 )
-
-go 1.17
