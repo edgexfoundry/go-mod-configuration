@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/hashicorp/consul/api v1.12.0
 	github.com/mitchellh/consulstructure v0.0.0-20190329231841-56fdc4d2da54
-	github.com/pelletier/go-toml v1.9.4
+	github.com/pelletier/go-toml v1.9.5
 	github.com/stretchr/testify v1.8.0
 )
 
