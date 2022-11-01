@@ -3,6 +3,16 @@
 ## Configuration Module (in Go)
 [Github repository](https://github.com/edgexfoundry/go-mod-configuration)
 
+## [v2.3.0] - 2022-11-09
+
+### Features ✨
+
+- Add the new "Optional" field in ServiceConfig struct ([#c575dfa](https://github.com/edgexfoundry/go-mod-configuration/commits/c575dfa))
+
+### Build 👷
+
+- Upgrade to Go 1.18 ([#26e3452](https://github.com/edgexfoundry/go-mod-configuration/commits/26e3452))
+
 ## [v2.2.0] - 2022-05-11
 
 ### Features ✨
