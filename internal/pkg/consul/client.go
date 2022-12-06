@@ -30,7 +30,7 @@ import (
 	"github.com/mitchellh/consulstructure"
 	"github.com/pelletier/go-toml"
 
-	"github.com/edgexfoundry/go-mod-configuration/v2/pkg/types"
+	"github.com/edgexfoundry/go-mod-configuration/v3/pkg/types"
 )
 
 const (
