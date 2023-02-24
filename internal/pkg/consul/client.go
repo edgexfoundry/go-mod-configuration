@@ -313,6 +313,27 @@ func (client *consulClient) GetConfigurationValue(name string) ([]byte, error) {
 	return keyPair.Value, nil
 }
 
+// GetConfigurationValueByFullPath gets a specific configuration value given the full path from Consul
+func (client *consulClient) GetConfigurationValueByFullPath(name string) ([]byte, error) {
+	keyPair, _, err := client.consulClient.KV().Get(name, nil)
+
+	retry, err := client.reloadAccessTokenOnAuthError(err)
+	if retry {
+		// Try again with new Access Token
+		keyPair, _, err = client.consulClient.KV().Get(name, nil)
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("unable to get value for %s from Consul: %v", name, err)
+	}
+
+	if keyPair == nil {
+		return nil, nil
+	}
+
+	return keyPair.Value, nil
+}
+
 // PutConfigurationValue puts a specific configuration value into Consul
 func (client *consulClient) PutConfigurationValue(name string, value []byte) error {
 	keyPair := &consulapi.KVPair{
