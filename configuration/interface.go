@@ -55,6 +55,9 @@ type Client interface {
 	// GetConfigurationValue gets a specific configuration value from the Configuration service
 	GetConfigurationValue(name string) ([]byte, error)
 
+	// GetConfigurationValueByFullPath gets a specific configuration value from the Configuration service
+	GetConfigurationValueByFullPath(fullPath string) ([]byte, error)
+
 	// PutConfigurationValue puts a specific configuration value into the Configuration service
 	PutConfigurationValue(name string, value []byte) error
 }
