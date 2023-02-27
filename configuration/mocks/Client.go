@@ -88,17 +88,17 @@ func (_m *Client) GetConfigurationValue(name string) ([]byte, error) {
 	return r0, r1
 }
 
-// GetConfigurationValueByFullPath provides a mock function with given fields: name
-func (_m *Client) GetConfigurationValueByFullPath(name string) ([]byte, error) {
-	ret := _m.Called(name)
+// GetConfigurationValueByFullPath provides a mock function with given fields: fullPath
+func (_m *Client) GetConfigurationValueByFullPath(fullPath string) ([]byte, error) {
+	ret := _m.Called(fullPath)
 
 	var r0 []byte
 	var r1 error
 	if rf, ok := ret.Get(0).(func(string) ([]byte, error)); ok {
-		return rf(name)
+		return rf(fullPath)
 	}
 	if rf, ok := ret.Get(0).(func(string) []byte); ok {
-		r0 = rf(name)
+		r0 = rf(fullPath)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]byte)
@@ -106,7 +106,7 @@ func (_m *Client) GetConfigurationValueByFullPath(name string) ([]byte, error) {
 	}
 
 	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(name)
+		r1 = rf(fullPath)
 	} else {
 		r1 = ret.Error(1)
 	}

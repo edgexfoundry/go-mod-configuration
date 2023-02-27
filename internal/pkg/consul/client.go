@@ -293,17 +293,17 @@ func (client *consulClient) ConfigurationValueExists(name string) (bool, error) 
 }
 
 // GetConfigurationValue gets a specific configuration value from Consul
-func (client *consulClient) GetConfigurationValue(name string) ([]byte, error) {
-	keyPair, _, err := client.consulClient.KV().Get(client.fullPath(name), nil)
+func (client *consulClient) GetConfigurationValue(fullPath string) ([]byte, error) {
+	keyPair, _, err := client.consulClient.KV().Get(client.fullPath(fullPath), nil)
 
 	retry, err := client.reloadAccessTokenOnAuthError(err)
 	if retry {
 		// Try again with new Access Token
-		keyPair, _, err = client.consulClient.KV().Get(client.fullPath(name), nil)
+		keyPair, _, err = client.consulClient.KV().Get(client.fullPath(fullPath), nil)
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("unable to get value for %s from Consul: %v", client.fullPath(name), err)
+		return nil, fmt.Errorf("unable to get value for %s from Consul: %v", client.fullPath(fullPath), err)
 	}
 
 	if keyPair == nil {
