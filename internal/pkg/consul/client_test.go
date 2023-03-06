@@ -279,6 +279,29 @@ func TestGetConfigurationValue(t *testing.T) {
 	}
 }
 
+func TestGetConfigurationValueByFullPath(t *testing.T) {
+	key := "Foo"
+	expected := []byte("bar")
+	uniqueServiceName := getUniqueServiceName()
+	fullKey := consulBasePath + uniqueServiceName + "/" + key
+	client := makeConsulClient(t, uniqueServiceName, "", nil)
+
+	// Make sure the target key/value exists
+	keyPair := api.KVPair{
+		Key:   fullKey,
+		Value: expected,
+	}
+
+	_, err := client.consulClient.KV().Put(&keyPair, nil)
+	if !assert.NoError(t, err) {
+		t.Fatal()
+	}
+
+	actual, err := client.GetConfigurationValueByFullPath(fullKey)
+	require.NoError(t, err)
+	require.Equal(t, expected, actual)
+}
+
 func TestPutConfigurationValue(t *testing.T) {
 	key := "Foo"
 	expected := []byte("bar")
@@ -603,6 +626,29 @@ func TestAccessToken(t *testing.T) {
 	_, err = client.GetConfigurationValue(valueName)
 	require.Error(t, err)
 	require.Contains(t, err.Error(), expectedErrMsg)
+}
+
+func TestGetConfigurationKeys(t *testing.T) {
+	key := "foo"
+	uniqueServiceName := getUniqueServiceName()
+	fullKey := consulBasePath + uniqueServiceName + "/Writable/" + key
+	client := makeConsulClient(t, uniqueServiceName, "", nil)
+
+	// Make sure the target key/value exists
+	keyPair := api.KVPair{
+		Key:   fullKey,
+		Value: []byte("bar"),
+	}
+
+	_, err := client.consulClient.KV().Put(&keyPair, nil)
+	if !assert.NoError(t, err) {
+		t.Fatal()
+	}
+
+	actual, err := client.GetConfigurationKeys("Writable")
+	require.NoError(t, err)
+	require.NotEmpty(t, actual)
+	require.Equal(t, []string{fullKey}, actual)
 }
 
 func makeConsulClient(t *testing.T, serviceName string, accessToken string, tokenCallback types.GetAccessTokenCallback) *consulClient {

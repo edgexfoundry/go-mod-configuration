@@ -62,6 +62,32 @@ func (_m *Client) GetConfiguration(configStruct interface{}) (interface{}, error
 	return r0, r1
 }
 
+// GetConfigurationKeys provides a mock function with given fields: name
+func (_m *Client) GetConfigurationKeys(name string) ([]string, error) {
+	ret := _m.Called(name)
+
+	var r0 []string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) ([]string, error)); ok {
+		return rf(name)
+	}
+	if rf, ok := ret.Get(0).(func(string) []string); ok {
+		r0 = rf(name)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]string)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(name)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetConfigurationValue provides a mock function with given fields: name
 func (_m *Client) GetConfigurationValue(name string) ([]byte, error) {
 	ret := _m.Called(name)
