@@ -356,6 +356,30 @@ func (client *consulClient) PutConfigurationValue(name string, value []byte) err
 	return nil
 }
 
+func (client *consulClient) GetConfigurationKeys(name string) ([]string, error) {
+	keyPairs, _, err := client.consulClient.KV().List(client.fullPath(name), nil)
+
+	retry, err := client.reloadAccessTokenOnAuthError(err)
+	if retry {
+		// Try again with new Access Token
+		keyPairs, _, err = client.consulClient.KV().List(client.fullPath(name), nil)
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("unable to get list of keys for %s from Consul: %v", client.fullPath(name), err)
+	}
+
+	if keyPairs == nil {
+		return nil, nil
+	}
+	var list []string
+	for _, v := range keyPairs {
+		list = append(list, v.Key)
+	}
+
+	return list, nil
+}
+
 func (client *consulClient) reloadAccessTokenOnAuthError(err error) (bool, error) {
 	if err == nil {
 		return false, nil

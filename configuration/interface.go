@@ -60,4 +60,7 @@ type Client interface {
 
 	// PutConfigurationValue puts a specific configuration value into the Configuration service
 	PutConfigurationValue(name string, value []byte) error
+
+	// GetConfigurationKeys returns all keys under name
+	GetConfigurationKeys(name string) ([]string, error)
 }
