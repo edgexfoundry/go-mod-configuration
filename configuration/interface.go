@@ -16,10 +16,6 @@
 
 package configuration
 
-import (
-	"github.com/pelletier/go-toml"
-)
-
 type Client interface {
 	// HasConfiguration checks to see if the Configuration service contains the service's configuration.
 	HasConfiguration() (bool, error)
@@ -27,8 +23,9 @@ type Client interface {
 	// HasSubConfiguration checks to see if the Configuration service contains the service's sub configuration.
 	HasSubConfiguration(name string) (bool, error)
 
-	// PutConfigurationToml puts a full toml configuration into the Configuration service
-	PutConfigurationToml(configuration *toml.Tree, overwrite bool) error
+	// PutConfigurationMap puts a full map configuration into the Configuration service
+	// The sub-paths to where the values are to be stored in the Configuration service are generated from the map key.
+	PutConfigurationMap(configuration map[string]any, overwrite bool) error
 
 	// PutConfiguration puts a full configuration struct into the Configuration service
 	PutConfiguration(configStruct interface{}, overwrite bool) error

@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2021 Intel Corporation
+// Copyright (c) 2023 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package consul
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -26,11 +27,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/edgexfoundry/go-mod-configuration/v3/pkg/types"
 	consulapi "github.com/hashicorp/consul/api"
 	"github.com/mitchellh/consulstructure"
-	"github.com/pelletier/go-toml"
-
-	"github.com/edgexfoundry/go-mod-configuration/v3/pkg/types"
 )
 
 const (
@@ -140,11 +139,11 @@ func (client *consulClient) HasSubConfiguration(name string) (bool, error) {
 	return true, nil
 }
 
-// PutConfigurationToml puts a full toml configuration into Consul
-func (client *consulClient) PutConfigurationToml(configuration *toml.Tree, overwrite bool) error {
+// PutConfigurationMap puts a full configuration map into Consul.
+// The sub-paths to where the values are to be stored in Consul are generated from the map key.
+func (client *consulClient) PutConfigurationMap(configuration map[string]any, overwrite bool) error {
 
-	configurationMap := configuration.ToMap()
-	keyValues := convertInterfaceToConsulPairs("", configurationMap)
+	keyValues := convertInterfaceToConsulPairs("", configuration)
 
 	// Put config properties into Consul.
 	for _, keyValue := range keyValues {
@@ -161,17 +160,18 @@ func (client *consulClient) PutConfigurationToml(configuration *toml.Tree, overw
 
 // PutConfiguration puts a full configuration struct into the Configuration provider
 func (client *consulClient) PutConfiguration(configuration interface{}, overwrite bool) error {
-	bytes, err := toml.Marshal(configuration)
+	configMap := make(map[string]any)
+	bytes, err := json.Marshal(configuration)
 	if err != nil {
 		return err
 	}
 
-	tree, err := toml.LoadBytes(bytes)
+	err = json.Unmarshal(bytes, &configMap)
 	if err != nil {
 		return err
 	}
 
-	err = client.PutConfigurationToml(tree, overwrite)
+	err = client.PutConfigurationMap(configMap, overwrite)
 	if err != nil {
 		return err
 	}
