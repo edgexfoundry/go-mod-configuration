@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/hashicorp/consul/api v1.21.0
 	github.com/mitchellh/consulstructure v0.0.0-20190329231841-56fdc4d2da54
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.4
 )
 
 require (
