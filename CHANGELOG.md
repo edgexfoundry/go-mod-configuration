@@ -3,6 +3,13 @@
 ## Configuration Module (in Go)
 [Github repository](https://github.com/edgexfoundry/go-mod-configuration)
 
+## [v3.1.0] - 2023-11-15
+
+### 👷 Build
+
+- Upgrade to go 1.21 and linter 1.54.2 ([df336b0…](https://github.com/edgexfoundry/go-mod-configuration/commit/df336b0784972208187fc3e6b1297ec5f902d26e))
+
+
 ## [v3.0.0] - 2023-05-31
 
 ### Features ✨
