@@ -8,13 +8,7 @@ Configuration client library for use by Go implementation of EdgeX micro service
 * Push a service's configuration in to the Configuration
 * Pull service's configuration from the Configuration service into its configuration struct
 * Listen for configuration updates
-
-### Installation ###
-* Make sure you have Go Modules enabled, i.e. have an initialized  go.mod file 
-* If your code is in your GOPATH then make sure ```GO111MODULE=on``` is set
-* Run ```go get github.com/edgexfoundry/go-mod-configuration```
-    * This will add the go-mod-configuration to the go.mod file and download it into the module cache
-    
+ 
 ### How to Use ###
 This library is used by Go programs for interacting with the Configuration service (i.e. Consul) and requires that a Configuration service be running somewhere that the Configuration Client can connect.  The types.ServiceConfig struct is used to specify the service implementation details :
 
