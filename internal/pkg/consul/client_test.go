@@ -1,5 +1,6 @@
 //
 // Copyright (c) 2023 Intel Corporation
+// Copyright (C) 2024 IOTech Ltd
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -568,7 +569,7 @@ func TestWatchForChanges(t *testing.T) {
 	loggingUpdateChannel := make(chan interface{})
 	errorChannel := make(chan error)
 
-	client.WatchForChanges(loggingUpdateChannel, errorChannel, &LoggingInfo{}, "Logging")
+	client.WatchForChanges(loggingUpdateChannel, errorChannel, &LoggingInfo{}, "Logging", nil)
 
 	loggingPass := 1
 
@@ -800,7 +801,7 @@ func TestRenewAccessToken(t *testing.T) {
 
 		updates := make(chan interface{})
 		errs := make(chan error)
-		client.WatchForChanges(updates, errs, &myConfig, "Logging")
+		client.WatchForChanges(updates, errs, &myConfig, "Logging", nil)
 
 		wg := sync.WaitGroup{}
 		wg.Add(1)
@@ -843,8 +844,8 @@ func TestRenewAccessToken(t *testing.T) {
 		allStopped := false
 		updates := make(chan interface{})
 		errs := make(chan error)
-		client.WatchForChanges(updates, errs, &myConfig, "Host")
-		client.WatchForChanges(updates, errs, &myConfig, "LogLevel")
+		client.WatchForChanges(updates, errs, &myConfig, "Host", nil)
+		client.WatchForChanges(updates, errs, &myConfig, "LogLevel", nil)
 
 		go func() {
 			client.StopWatching()

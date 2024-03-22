@@ -1,5 +1,6 @@
 //
 // Copyright (c) 2019 Intel Corporation
+// Copyright (C) 2024 IOTech Ltd
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +21,7 @@ import (
 	"fmt"
 
 	"github.com/edgexfoundry/go-mod-configuration/v3/internal/pkg/consul"
+	"github.com/edgexfoundry/go-mod-configuration/v3/internal/pkg/keeper"
 	"github.com/edgexfoundry/go-mod-configuration/v3/pkg/types"
 )
 
@@ -34,6 +36,9 @@ func NewConfigurationClient(config types.ServiceConfig) (Client, error) {
 		var err error
 		client, err := consul.NewConsulClient(config)
 		return client, err
+	case "keeper":
+		client := keeper.NewKeeperClient(config)
+		return client, nil
 	default:
 		return nil, fmt.Errorf("unknown configuration client type '%s' requested", config.Type)
 	}
