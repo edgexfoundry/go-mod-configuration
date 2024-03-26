@@ -210,12 +210,14 @@ func (k *keeperClient) WatchForChanges(updateChannel chan<- interface{}, errorCh
 				errorChannel <- e
 			case msgEnvelope := <-messages:
 				if msgEnvelope.ContentType != common.ContentTypeJSON {
+					errorChannel <- fmt.Errorf("invalid content type of configuration changes message, expected: %s, but got: %s", common.ContentTypeJSON, msgEnvelope.ContentType)
 					continue
 				}
 				var updatedConfig models.KVS
 				// unmarshal the updated config to KV DTO
 				err := json.Unmarshal(msgEnvelope.Payload, &updatedConfig)
 				if err != nil {
+					errorChannel <- fmt.Errorf("failed to unmarshal the updated configuration: %v", err)
 					continue
 				}
 				keyPrefix := path.Join(k.configBasePath, waitKey)
@@ -223,11 +225,12 @@ func (k *keeperClient) WatchForChanges(updateChannel chan<- interface{}, errorCh
 				// get the whole configs KV DTO array from Keeper with the same keyPrefix
 				kvConfigs, err := k.kvsClient.ValuesByKey(context.Background(), keyPrefix)
 				if err != nil {
+					errorChannel <- fmt.Errorf("failed to get the configurations with key prefix %s from Keeper: %v", keyPrefix, err)
 					continue
 				}
 
 				// if the updated key not equal to keyPrefix, need to check the updated key and value from the message payload are valid
-				// e.g. keyPrefix = "edgex/core/3.0/core-data/Writable" which is the root level of Writable configuration
+				// e.g. keyPrefix = "edgex/3.0/core-data/Writable" which is the root level of Writable configuration
 				if updatedConfig.Key != keyPrefix {
 					foundUpdatedKey := false
 					for _, c := range kvConfigs.Response {
@@ -245,6 +248,7 @@ func (k *keeperClient) WatchForChanges(updateChannel chan<- interface{}, errorCh
 					// if the updated key from the message payload hasn't been found in Keeper
 					// skip this subscribed message payload
 					if !foundUpdatedKey {
+						errorChannel <- fmt.Errorf("the updated key %s hasn't been found in Keeper, skipping this message", updatedConfig.Key)
 						continue
 					}
 				}
@@ -252,6 +256,7 @@ func (k *keeperClient) WatchForChanges(updateChannel chan<- interface{}, errorCh
 				// decode KV DTO array to configuration struct
 				err = decode(keyPrefix, kvConfigs.Response, configuration)
 				if err != nil {
+					errorChannel <- fmt.Errorf("failed to decode the updated configuration: %v", err)
 					continue
 				}
 				updateChannel <- configuration
