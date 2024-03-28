@@ -21,6 +21,8 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/edgexfoundry/go-mod-core-contracts/v3/clients/interfaces"
 )
 
 const DefaultProtocol = "http"
@@ -45,6 +47,8 @@ type ServiceConfig struct {
 	// GetAccessToken is a callback function that retrieves a new Access Token.
 	// This callback is used when a '403 Forbidden' status is received from any call to the configuration provider service.
 	GetAccessToken GetAccessTokenCallback
+	// AuthInjector is an interface to obtain a JWT and secure transport for remote service calls
+	AuthInjector interfaces.AuthenticationInjector
 	// Optional contains all other properties of the configuration provider might use.
 	// For example, it might need the message bus connection information to publish the config changes.
 	Optional map[string]any

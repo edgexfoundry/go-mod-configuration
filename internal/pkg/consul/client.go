@@ -1,5 +1,6 @@
 //
 // Copyright (c) 2023 Intel Corporation
+// Copyright (C) 2024 IOTech Ltd
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,6 +29,8 @@ import (
 	"time"
 
 	"github.com/edgexfoundry/go-mod-configuration/v3/pkg/types"
+	"github.com/edgexfoundry/go-mod-messaging/v3/messaging"
+
 	consulapi "github.com/hashicorp/consul/api"
 	"github.com/mitchellh/consulstructure"
 )
@@ -230,7 +233,7 @@ func (client *consulClient) GetConfiguration(configStruct interface{}) (interfac
 // WatchForChanges sets up a Consul watch for the target key and send back updates on the update channel.
 // Passed in struct is only a reference for decoder, empty struct is ok
 // Sends the configuration in the target struct as interface{} on updateChannel, which caller must cast
-func (client *consulClient) WatchForChanges(updateChannel chan<- interface{}, errorChannel chan<- error, configuration interface{}, watchKey string) {
+func (client *consulClient) WatchForChanges(updateChannel chan<- interface{}, errorChannel chan<- error, configuration interface{}, watchKey string, _ messaging.MessageClient) {
 	// some watch keys may have start with "/", need to remove it since the base path already has it.
 	if strings.Index(watchKey, "/") == 0 {
 		watchKey = watchKey[1:]
@@ -293,17 +296,17 @@ func (client *consulClient) ConfigurationValueExists(name string) (bool, error) 
 }
 
 // GetConfigurationValue gets a specific configuration value from Consul
-func (client *consulClient) GetConfigurationValue(fullPath string) ([]byte, error) {
-	keyPair, _, err := client.consulClient.KV().Get(client.fullPath(fullPath), nil)
+func (client *consulClient) GetConfigurationValue(name string) ([]byte, error) {
+	keyPair, _, err := client.consulClient.KV().Get(client.fullPath(name), nil)
 
 	retry, err := client.reloadAccessTokenOnAuthError(err)
 	if retry {
 		// Try again with new Access Token
-		keyPair, _, err = client.consulClient.KV().Get(client.fullPath(fullPath), nil)
+		keyPair, _, err = client.consulClient.KV().Get(client.fullPath(name), nil)
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("unable to get value for %s from Consul: %v", client.fullPath(fullPath), err)
+		return nil, fmt.Errorf("unable to get value for %s from Consul: %v", client.fullPath(name), err)
 	}
 
 	if keyPair == nil {
@@ -314,17 +317,17 @@ func (client *consulClient) GetConfigurationValue(fullPath string) ([]byte, erro
 }
 
 // GetConfigurationValueByFullPath gets a specific configuration value given the full path from Consul
-func (client *consulClient) GetConfigurationValueByFullPath(name string) ([]byte, error) {
-	keyPair, _, err := client.consulClient.KV().Get(name, nil)
+func (client *consulClient) GetConfigurationValueByFullPath(fullPath string) ([]byte, error) {
+	keyPair, _, err := client.consulClient.KV().Get(fullPath, nil)
 
 	retry, err := client.reloadAccessTokenOnAuthError(err)
 	if retry {
 		// Try again with new Access Token
-		keyPair, _, err = client.consulClient.KV().Get(name, nil)
+		keyPair, _, err = client.consulClient.KV().Get(fullPath, nil)
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("unable to get value for %s from Consul: %v", name, err)
+		return nil, fmt.Errorf("unable to get value for %s from Consul: %v", fullPath, err)
 	}
 
 	if keyPair == nil {
