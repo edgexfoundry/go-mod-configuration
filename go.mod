@@ -8,7 +8,7 @@ require (
 	github.com/hashicorp/consul/api v1.27.0
 	github.com/mitchellh/consulstructure v0.0.0-20190329231841-56fdc4d2da54
 	github.com/mitchellh/mapstructure v1.5.0
-	github.com/spf13/cast v1.4.1
+	github.com/spf13/cast v1.6.0
 	github.com/stretchr/testify v1.9.0
 )
 
