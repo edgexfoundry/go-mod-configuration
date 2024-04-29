@@ -3,7 +3,7 @@ module github.com/edgexfoundry/go-mod-configuration/v3
 go 1.21
 
 require (
-	github.com/edgexfoundry/go-mod-core-contracts/v3 v3.2.0-dev.17
+	github.com/edgexfoundry/go-mod-core-contracts/v3 v3.2.0-dev.18
 	github.com/edgexfoundry/go-mod-messaging/v3 v3.1.0
 	github.com/hashicorp/consul/api v1.27.0
 	github.com/mitchellh/consulstructure v0.0.0-20190329231841-56fdc4d2da54
