@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/edgexfoundry/go-mod-core-contracts/v3 v3.2.0-dev.24
 	github.com/edgexfoundry/go-mod-messaging/v3 v3.2.0-dev.27
-	github.com/hashicorp/consul/api v1.28.3
+	github.com/hashicorp/consul/api v1.29.1
 	github.com/mitchellh/consulstructure v0.0.0-20190329231841-56fdc4d2da54
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/cast v1.6.0
@@ -26,7 +26,6 @@ require (
 	github.com/go-redis/redis/v7 v7.3.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
-	github.com/hashicorp/consul/proto-public v0.6.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.5.0 // indirect
@@ -45,6 +44,7 @@ require (
 	github.com/nats-io/nats.go v1.36.0 // indirect
 	github.com/nats-io/nkeys v0.4.7 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
+	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
