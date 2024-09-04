@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/edgexfoundry/go-mod-core-contracts/v3 v3.2.0-dev.43
-	github.com/edgexfoundry/go-mod-messaging/v3 v3.2.0-dev.31
+	github.com/edgexfoundry/go-mod-messaging/v3 v3.2.0-dev.35
 	github.com/hashicorp/consul/api v1.29.4
 	github.com/mitchellh/consulstructure v0.0.0-20190329231841-56fdc4d2da54
 	github.com/mitchellh/mapstructure v1.5.0
@@ -41,7 +41,7 @@ require (
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.0 // indirect
-	github.com/nats-io/nats.go v1.36.0 // indirect
+	github.com/nats-io/nats.go v1.37.0 // indirect
 	github.com/nats-io/nkeys v0.4.7 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
