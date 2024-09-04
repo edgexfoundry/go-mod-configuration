@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/edgexfoundry/go-mod-core-contracts/v3 v3.2.0-dev.32
 	github.com/edgexfoundry/go-mod-messaging/v3 v3.2.0-dev.31
-	github.com/hashicorp/consul/api v1.29.3
+	github.com/hashicorp/consul/api v1.29.4
 	github.com/mitchellh/consulstructure v0.0.0-20190329231841-56fdc4d2da54
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/cast v1.7.0
