@@ -3,7 +3,7 @@ module github.com/edgexfoundry/go-mod-configuration/v3
 go 1.21
 
 require (
-	github.com/edgexfoundry/go-mod-core-contracts/v3 v3.2.0-dev.43
+	github.com/edgexfoundry/go-mod-core-contracts/v3 v3.2.0-dev.46
 	github.com/edgexfoundry/go-mod-messaging/v3 v3.2.0-dev.35
 	github.com/hashicorp/consul/api v1.29.4
 	github.com/mitchellh/consulstructure v0.0.0-20190329231841-56fdc4d2da54
@@ -22,7 +22,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.22.0 // indirect
+	github.com/go-playground/validator/v10 v10.22.1 // indirect
 	github.com/go-redis/redis/v7 v7.3.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
