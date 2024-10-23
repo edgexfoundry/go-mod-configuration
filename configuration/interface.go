@@ -17,7 +17,7 @@
 
 package configuration
 
-import "github.com/edgexfoundry/go-mod-messaging/v3/messaging"
+import "github.com/edgexfoundry/go-mod-messaging/v4/messaging"
 
 type Client interface {
 	// HasConfiguration checks to see if the Configuration service contains the service's configuration.
