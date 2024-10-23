@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/edgexfoundry/go-mod-configuration/v3/pkg/types"
+	"github.com/edgexfoundry/go-mod-configuration/v4/pkg/types"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

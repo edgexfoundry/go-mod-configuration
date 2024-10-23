@@ -28,8 +28,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/edgexfoundry/go-mod-configuration/v3/pkg/types"
-	"github.com/edgexfoundry/go-mod-messaging/v3/messaging"
+	"github.com/edgexfoundry/go-mod-configuration/v4/pkg/types"
+	"github.com/edgexfoundry/go-mod-messaging/v4/messaging"
 
 	consulapi "github.com/hashicorp/consul/api"
 	"github.com/mitchellh/consulstructure"

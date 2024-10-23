@@ -13,17 +13,17 @@ import (
 	"net/http"
 	"path"
 
-	"github.com/edgexfoundry/go-mod-core-contracts/v3/dtos/requests"
-	"github.com/edgexfoundry/go-mod-core-contracts/v3/models"
+	"github.com/edgexfoundry/go-mod-core-contracts/v4/dtos/requests"
+	"github.com/edgexfoundry/go-mod-core-contracts/v4/models"
 	"github.com/spf13/cast"
 
-	httpClient "github.com/edgexfoundry/go-mod-core-contracts/v3/clients/http"
-	"github.com/edgexfoundry/go-mod-core-contracts/v3/clients/interfaces"
-	"github.com/edgexfoundry/go-mod-core-contracts/v3/common"
-	"github.com/edgexfoundry/go-mod-messaging/v3/messaging"
-	msgTypes "github.com/edgexfoundry/go-mod-messaging/v3/pkg/types"
+	httpClient "github.com/edgexfoundry/go-mod-core-contracts/v4/clients/http"
+	"github.com/edgexfoundry/go-mod-core-contracts/v4/clients/interfaces"
+	"github.com/edgexfoundry/go-mod-core-contracts/v4/common"
+	"github.com/edgexfoundry/go-mod-messaging/v4/messaging"
+	msgTypes "github.com/edgexfoundry/go-mod-messaging/v4/pkg/types"
 
-	"github.com/edgexfoundry/go-mod-configuration/v3/pkg/types"
+	"github.com/edgexfoundry/go-mod-configuration/v4/pkg/types"
 )
 
 const (
