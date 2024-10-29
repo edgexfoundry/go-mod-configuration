@@ -4,4 +4,7 @@ updates:
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
+    ignore:
+      - dependency-name: "github.com/edgexfoundry/go-mod-core-contracts/v4"
+
