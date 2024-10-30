@@ -27,8 +27,6 @@ import (
 
 const DefaultProtocol = "http"
 
-type GetAccessTokenCallback func() (string, error)
-
 // ServiceConfig defines the information need to connect to the Configuration service and optionally register the service
 // for discovery and health checks
 type ServiceConfig struct {
@@ -38,15 +36,10 @@ type ServiceConfig struct {
 	Host string
 	// Port is the HTTP port of the Configuration service
 	Port int
-	// Type is the implementation type of the Configuration service, i.e. consul
+	// Type is the implementation type of the Configuration service, i.e. keeper
 	Type string
 	// BasePath is the base path with in the Configuration service where the your service's configuration is stored
 	BasePath string
-	// AccessToken is the token that is used to access the service configuration
-	AccessToken string
-	// GetAccessToken is a callback function that retrieves a new Access Token.
-	// This callback is used when a '403 Forbidden' status is received from any call to the configuration provider service.
-	GetAccessToken GetAccessTokenCallback
 	// AuthInjector is an interface to obtain a JWT and secure transport for remote service calls
 	AuthInjector interfaces.AuthenticationInjector
 	// Optional contains all other properties of the configuration provider might use.

@@ -20,7 +20,6 @@ package configuration
 import (
 	"fmt"
 
-	"github.com/edgexfoundry/go-mod-configuration/v4/internal/pkg/consul"
 	"github.com/edgexfoundry/go-mod-configuration/v4/internal/pkg/keeper"
 	"github.com/edgexfoundry/go-mod-configuration/v4/pkg/types"
 )
@@ -32,10 +31,6 @@ func NewConfigurationClient(config types.ServiceConfig) (Client, error) {
 	}
 
 	switch config.Type {
-	case "consul":
-		var err error
-		client, err := consul.NewConsulClient(config)
-		return client, err
 	case "keeper":
 		client := keeper.NewKeeperClient(config)
 		return client, nil

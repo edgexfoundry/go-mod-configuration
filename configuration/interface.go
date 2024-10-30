@@ -33,12 +33,12 @@ type Client interface {
 	// PutConfiguration puts a full configuration struct into the Configuration service
 	PutConfiguration(configStruct interface{}, overwrite bool) error
 
-	// GetConfiguration gets the full configuration from Consul into the target configuration struct.
+	// GetConfiguration gets the full configuration from keeper into the target configuration struct.
 	// Passed in struct is only a reference for Configuration service. Empty struct is fine
 	// Returns the configuration in the target struct as interface{}, which caller must cast
 	GetConfiguration(configStruct interface{}) (interface{}, error)
 
-	// WatchForChanges sets up a Consul watch for the target key and send back updates on the update channel.
+	// WatchForChanges sets up a keeper watch for the target key and send back updates on the update channel.
 	// Passed in struct is only a reference for Configuration service, empty struct is ok
 	// Sends the configuration in the target struct as interface{} on updateChannel, which caller must cast
 	WatchForChanges(updateChannel chan<- interface{}, errorChannel chan<- error, configuration interface{}, waitKey string, msgClient messaging.MessageClient)

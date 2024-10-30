@@ -29,7 +29,7 @@ func TestGetUrl(t *testing.T) {
 		Protocol: "https",
 		Host:     "localhost",
 		Port:     8080,
-		Type:     "consul",
+		Type:     "keeper",
 	}
 
 	actual := target.GetUrl()
@@ -78,16 +78,16 @@ func TestPopulateFromUrl(t *testing.T) {
 	}{
 		{
 			Name:             "Success, protocol specified",
-			Url:              "consul.https://localhost:8080",
-			ExpectedType:     "consul",
+			Url:              "keeper.https://localhost:8080",
+			ExpectedType:     "keeper",
 			ExpectedProtocol: "https",
 			ExpectedHost:     "localhost",
 			ExpectedPort:     8080,
 		},
 		{
 			Name:             "Success, protocol not specified",
-			Url:              "consul://localhost:8080",
-			ExpectedType:     "consul",
+			Url:              "keeper://localhost:8080",
+			ExpectedType:     "keeper",
 			ExpectedProtocol: "http",
 			ExpectedHost:     "localhost",
 			ExpectedPort:     8080,
@@ -99,7 +99,7 @@ func TestPopulateFromUrl(t *testing.T) {
 		},
 		{
 			Name:          "Bad Port",
-			Url:           "consul.https:\\localhost:eight",
+			Url:           "keeper.https:\\localhost:eight",
 			ExpectedError: "the port from Provider URL is incorrect",
 		},
 		{
@@ -109,7 +109,7 @@ func TestPopulateFromUrl(t *testing.T) {
 		},
 		{
 			Name:          "Bad Type and Protocol spec",
-			Url:           "xyz.consul.http://localhost:800",
+			Url:           "xyz.keeper.http://localhost:800",
 			ExpectedError: "the Type and Protocol spec from Provider URL is incorrect",
 		},
 	}
