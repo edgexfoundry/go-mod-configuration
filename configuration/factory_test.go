@@ -30,16 +30,13 @@ var config = types.ServiceConfig{
 	BasePath: "config",
 }
 
-func TestNewClientConsul(t *testing.T) {
+func TestNewClientKeeper(t *testing.T) {
 
-	config.Type = "consul"
-
-	client, err := NewConfigurationClient(config)
+	config.Type = "keeper"
+	_, err := NewConfigurationClient(config)
 	if assert.Nil(t, err, "New Configuration client failed: ", err) == false {
 		t.Fatal()
 	}
-
-	assert.False(t, client.IsAlive(), "Consul service not expected be running")
 }
 
 func TestNewClientBogusType(t *testing.T) {
