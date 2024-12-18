@@ -6,7 +6,7 @@ require (
 	github.com/edgexfoundry/go-mod-core-contracts/v4 v4.0.0-dev.15
 	github.com/edgexfoundry/go-mod-messaging/v4 v4.0.0-dev.9
 	github.com/mitchellh/mapstructure v1.5.0
-	github.com/spf13/cast v1.7.0
+	github.com/spf13/cast v1.7.1
 	github.com/stretchr/testify v1.10.0
 )
 
