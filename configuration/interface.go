@@ -1,6 +1,6 @@
 //
 // Copyright (c) 2019 Intel Corporation
-// Copyright (C) 2024 IOTech Ltd
+// Copyright (C) 2024-2025 IOTech Ltd
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ type Client interface {
 	// WatchForChanges sets up a keeper watch for the target key and send back updates on the update channel.
 	// Passed in struct is only a reference for Configuration service, empty struct is ok
 	// Sends the configuration in the target struct as interface{} on updateChannel, which caller must cast
-	WatchForChanges(updateChannel chan<- interface{}, errorChannel chan<- error, configuration interface{}, waitKey string, msgClient messaging.MessageClient)
+	WatchForChanges(updateChannel chan<- interface{}, errorChannel chan<- error, configuration interface{}, waitKey string, getMsgClientCb func() messaging.MessageClient)
 
 	// StopWatching causes all WatchForChanges processing to stop and waits until they have stopped.
 	StopWatching()
