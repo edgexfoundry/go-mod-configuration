@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2024 IOTech Ltd
+// Copyright (C) 2024-2025 IOTech Ltd
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -167,8 +167,9 @@ func (k *keeperClient) GetConfiguration(configStruct interface{}) (interface{}, 
 	return configStruct, nil
 }
 
-func (k *keeperClient) WatchForChanges(updateChannel chan<- interface{}, errorChannel chan<- error, configuration interface{}, waitKey string, messageBus messaging.MessageClient) {
-	if messageBus == nil {
+func (k *keeperClient) WatchForChanges(updateChannel chan<- interface{}, errorChannel chan<- error, configuration interface{}, waitKey string, getMsgClientCb func() messaging.MessageClient) {
+	messageClient := getMsgClientCb()
+	if messageClient == nil {
 		configErr := errors.New("unable to use MessageClient to watch for configuration changes")
 		errorChannel <- configErr
 		return
@@ -184,16 +185,16 @@ func (k *keeperClient) WatchForChanges(updateChannel chan<- interface{}, errorCh
 	}
 
 	watchErrors := make(chan error)
-	err := messageBus.Subscribe(topics, watchErrors)
+	err := messageClient.Subscribe(topics, watchErrors)
 	if err != nil {
-		_ = messageBus.Disconnect()
+		_ = messageClient.Disconnect()
 		errorChannel <- err
 		return
 	}
 
 	go func() {
 		defer func() {
-			_ = messageBus.Disconnect()
+			_ = messageClient.Disconnect()
 		}()
 
 		// send a nil value to updateChannel once the watcher connection is established
