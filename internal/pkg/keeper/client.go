@@ -7,7 +7,6 @@ package keeper
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -216,7 +215,7 @@ func (k *keeperClient) WatchForChanges(updateChannel chan<- interface{}, errorCh
 				}
 				var updatedConfig models.KVS
 				// unmarshal the updated config to KV DTO
-				err := json.Unmarshal(msgEnvelope.Payload, &updatedConfig)
+				updatedConfig, err := msgTypes.GetMsgPayload[models.KVS](msgEnvelope)
 				if err != nil {
 					errorChannel <- fmt.Errorf("failed to unmarshal the updated configuration: %v", err)
 					continue
