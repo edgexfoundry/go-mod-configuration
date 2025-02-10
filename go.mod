@@ -3,8 +3,8 @@ module github.com/edgexfoundry/go-mod-configuration/v4
 go 1.23
 
 require (
-	github.com/edgexfoundry/go-mod-core-contracts/v4 v4.0.0-dev.22
-	github.com/edgexfoundry/go-mod-messaging/v4 v4.0.0-dev.12
+	github.com/edgexfoundry/go-mod-core-contracts/v4 v4.0.0-dev.24
+	github.com/edgexfoundry/go-mod-messaging/v4 v4.0.0-dev.17
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/cast v1.7.1
 	github.com/stretchr/testify v1.10.0
@@ -24,7 +24,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/nats-io/nats.go v1.38.0 // indirect
+	github.com/nats-io/nats.go v1.39.0 // indirect
 	github.com/nats-io/nkeys v0.4.9 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
