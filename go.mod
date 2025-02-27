@@ -3,8 +3,8 @@ module github.com/edgexfoundry/go-mod-configuration/v4
 go 1.23
 
 require (
-	github.com/edgexfoundry/go-mod-core-contracts/v4 v4.0.0-dev.26
-	github.com/edgexfoundry/go-mod-messaging/v4 v4.0.0-dev.18
+	github.com/edgexfoundry/go-mod-core-contracts/v4 v4.0.0-dev.30
+	github.com/edgexfoundry/go-mod-messaging/v4 v4.0.0-dev.21
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/cast v1.7.1
 	github.com/stretchr/testify v1.10.0
@@ -17,14 +17,14 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.24.0 // indirect
+	github.com/go-playground/validator/v10 v10.25.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/nats-io/nats.go v1.39.0 // indirect
+	github.com/nats-io/nats.go v1.39.1 // indirect
 	github.com/nats-io/nkeys v0.4.9 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
