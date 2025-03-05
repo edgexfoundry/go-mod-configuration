@@ -3,6 +3,48 @@
 ## Configuration Module (in Go)
 [Github repository](https://github.com/edgexfoundry/go-mod-configuration)
 
+## [v4.0.0] - 2025-03-12
+
+### ✨ Features
+
+- Update to use go-mod-messaging GetMsgPayload ([b6781f5…](https://github.com/edgexfoundry/go-mod-configuration/commit/b6781f5eee9d0fdd176c16d9b24124547c540f36))
+- Pass a callback function to `WatchForChanges` method ([9a5a38b…](https://github.com/edgexfoundry/go-mod-configuration/commit/9a5a38b711f3410798ab99b7faa6898690726914))
+```text
+
+BREAKING CHANGE: Pass a callback function to `WatchForChanges` method
+
+```
+- Remove consul dependency ([5172b78…](https://github.com/edgexfoundry/go-mod-configuration/commit/5172b78c12098caba53b2ceef3f4ab05a003f7e8))
+```text
+
+BREAKING CHANGE: Remove consul dependency
+
+```
+- Add Core Keeper client ([caf98ed…](https://github.com/edgexfoundry/go-mod-configuration/commit/caf98edd94b4a29aa587d288076fdcb8240247dc))
+```text
+
+BREAKING CHANGE: Introduced Core Keeper as a new service for configuration and registry management
+
+```
+### ♻ Code Refactoring
+
+- Update go module to v4 ([2e5abff…](https://github.com/edgexfoundry/go-mod-configuration/commit/2e5abffad6995e5159fe63d2341145f1af68087d))
+```text
+
+BREAKING CHANGE: Update go module to v4
+
+```
+
+### 📖 Documentation
+
+- Removed outdated installation instructions for using the module ([9d0c9bf…](https://github.com/edgexfoundry/go-mod-registry/commit/9d0c9bf73e160c4b1efa4c4e1efe5bb125249e55))
+
+
+### 👷 Build
+
+- Upgrade to go-1.23, Linter1.61.0 ([91f69b5…](https://github.com/edgexfoundry/go-mod-configuration/commit/91f69b5835c4a787176435d24f0757d5bb5adfd1))
+
+
 ## [v3.1.0] - 2023-11-15
 
 ### 👷 Build
