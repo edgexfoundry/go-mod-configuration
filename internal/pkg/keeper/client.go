@@ -210,8 +210,8 @@ func (k *keeperClient) WatchForChanges(updateChannel chan<- interface{}, errorCh
 			case e := <-watchErrors:
 				errorChannel <- e
 			case msgEnvelope := <-messages:
-				if msgEnvelope.ContentType != common.ContentTypeJSON {
-					errorChannel <- fmt.Errorf("invalid content type of configuration changes message, expected: %s, but got: %s", common.ContentTypeJSON, msgEnvelope.ContentType)
+				if msgEnvelope.ContentType != common.ContentTypeJSON && msgEnvelope.ContentType != common.ContentTypeCBOR {
+					errorChannel <- fmt.Errorf("invalid content type of configuration changes message, expected: %s or %s, but got: %s", common.ContentTypeJSON, common.ContentTypeCBOR, msgEnvelope.ContentType)
 					continue
 				}
 				var updatedConfig models.KVS
@@ -236,8 +236,13 @@ func (k *keeperClient) WatchForChanges(updateChannel chan<- interface{}, errorCh
 					for _, c := range kvConfigs.Response {
 						if c.Key == updatedConfig.Key {
 							// if the updated value in the message payload is different from the one obtained by Keeper
-							// skip this subscribed message payload and continue the outer loop
-							if c.Value != updatedConfig.Value {
+							//   skip this subscribed message payload and continue the outer loop
+							// if the updated value in the message payload is equal to the one obtained by Keeper
+							//   decode the kvConfigs with the configuration struct
+
+							// convert the message payload value to string for value comparison, because the value retrieved from the Keeper is always a string, but the value from the message payload may be either a string, bool, or float.
+							updatedValueStr := fmt.Sprintf("%v", updatedConfig.Value)
+							if c.Value != updatedValueStr {
 								continue outerLoop
 							}
 							break
