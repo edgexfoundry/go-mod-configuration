@@ -15,7 +15,6 @@ import (
 
 	"github.com/edgexfoundry/go-mod-core-contracts/v4/dtos/requests"
 	"github.com/edgexfoundry/go-mod-core-contracts/v4/models"
-	"github.com/spf13/cast"
 
 	httpClient "github.com/edgexfoundry/go-mod-core-contracts/v4/clients/http"
 	"github.com/edgexfoundry/go-mod-core-contracts/v4/clients/interfaces"
@@ -24,6 +23,8 @@ import (
 	msgTypes "github.com/edgexfoundry/go-mod-messaging/v4/pkg/types"
 
 	"github.com/edgexfoundry/go-mod-configuration/v4/pkg/types"
+
+	"github.com/spf13/cast"
 )
 
 const (
@@ -238,7 +239,7 @@ func (k *keeperClient) WatchForChanges(updateChannel chan<- interface{}, errorCh
 							// convert the updatedConfig.Value to string for value comparison, because the value retrieved from the Keeper is always a string, but the value from the message payload may be either a string, bool, or float.
 							// if the updated value in the message payload is different from the one obtained by Keeper
 							// skip this subscribed message payload and continue the outer loop
-							updatedValueStr := fmt.Sprintf("%v", updatedConfig.Value)
+							updatedValueStr := cast.ToString(updatedConfig.Value)
 							if c.Value != updatedValueStr {
 								continue outerLoop
 							}
