@@ -16,4 +16,5 @@
 
 edgeXBuildGoMod (
     project: 'go-mod-configuration',
+    goVersion: '1.25'
 )
