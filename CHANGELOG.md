@@ -3,6 +3,24 @@
 ## Configuration Module (in Go)
 [Github repository](https://github.com/edgexfoundry/go-mod-configuration)
 
+
+## [v4.0.2]
+
+### 🐛 Bug Fixes 
+- Reset the configuration structure before decoding to prevent stale values from persisting ([#20a6aeb](https://github.com/edgexfoundry/go-mod-configuration/commits/20a6aeb))
+- Fix the service so that configuration changes can be applied correctly ([#a933cdf](https://github.com/edgexfoundry/go-mod-configuration/commits/a933cdf))
+
+### 👷 Build 
+- Set the Go version to 1.23 ([#39d94eb](https://github.com/edgexfoundry/go-mod-configuration/commits/39d94eb))
+
+
+## [v4.0.1]
+
+### 👷 Build 
+- Update Go modules to version 4.0.1 for Odessa ([#188](https://github.com/edgexfoundry/go-mod-configuration/issues/188)) ([#0cec328](https://github.com/edgexfoundry/go-mod-configuration/commits/0cec328))
+
+
+
 ## [v4.0.0] - 2025-03-12
 
 ### ✨ Features
