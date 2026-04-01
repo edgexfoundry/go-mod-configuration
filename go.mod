@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/edgexfoundry/go-mod-core-contracts/v4 v4.1.0-dev.28
-	github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.23
+	github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.24
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/cast v1.10.0
 	github.com/stretchr/testify v1.11.1
