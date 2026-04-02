@@ -3,8 +3,8 @@ module github.com/edgexfoundry/go-mod-configuration/v4
 go 1.25.0
 
 require (
-	github.com/edgexfoundry/go-mod-core-contracts/v4 v4.1.0-dev.28
-	github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.23
+	github.com/edgexfoundry/go-mod-core-contracts/v4 v4.1.0-dev.32
+	github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.25
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/cast v1.10.0
 	github.com/stretchr/testify v1.11.1
@@ -13,11 +13,11 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/eclipse/paho.mqtt.golang v1.5.1 // indirect
-	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.12 // indirect
+	github.com/fxamacker/cbor/v2 v2.9.1 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.30.1 // indirect
+	github.com/go-playground/validator/v10 v10.30.2 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
