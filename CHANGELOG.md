@@ -3,6 +3,18 @@
 ## Configuration Module (in Go)
 [Github repository](https://github.com/edgexfoundry/go-mod-configuration)
 
+
+## [v4.0.2] - 2025-05-31
+
+### 🐛 Bug Fixes 
+- Replace `fmt.Sprintf("%v",v)` with `cast.ToString(v)` ([#cdd0588](https://github.com/edgexfoundry/go-mod-configuration/commits/cdd0588))
+- Ensure configuration changes are applied to service ([#61880af](https://github.com/edgexfoundry/go-mod-configuration/commits/61880af))
+- Reset configuration structures before decoding to avoid stale values ([#5012b11](https://github.com/edgexfoundry/go-mod-configuration/commits/5012b11))
+
+### 👷 Build 
+- Update goVersion to 1.25 and golangci-lint to 2.5.0 ([#da488d7](https://github.com/edgexfoundry/go-mod-configuration/commits/da488d7))
+
+
 ## [v4.0.0] - 2025-03-12
 
 ### ✨ Features
