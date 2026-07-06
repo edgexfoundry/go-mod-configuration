@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/edgexfoundry/go-mod-core-contracts/v4 v4.1.0-dev.39
-	github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.29
+	github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.30
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/cast v1.10.0
 	github.com/stretchr/testify v1.11.1
@@ -32,7 +32,7 @@ require (
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	golang.org/x/crypto v0.52.0 // indirect
-	golang.org/x/net v0.54.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/sys v0.45.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
