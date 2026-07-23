@@ -4,8 +4,8 @@ github.com/eclipse/paho.mqtt.golang v1.5.1 h1:/VSOv3oDLlpqR2Epjn1Q7b2bSTplJIeV2I
 github.com/eclipse/paho.mqtt.golang v1.5.1/go.mod h1:1/yJCneuyOoCOzKSsOTUc0AJfpsItBGWvYpBLimhArU=
 github.com/edgexfoundry/go-mod-core-contracts/v4 v4.1.0-dev.39 h1:jlr50ugKz0H9CkY0hIiv0X6V/Dss690wetkDMGIWLms=
 github.com/edgexfoundry/go-mod-core-contracts/v4 v4.1.0-dev.39/go.mod h1:SDiRrlBMtttF3Ny8M26GNWPdMbBqhenR5pbfrCBm4zM=
-github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.30 h1:l7OlWD5wWnjCpbUAkDBj+GSxhj2brBrLE5iIiCIvL/o=
-github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.30/go.mod h1:J2A8ug/s3zNREDdcYpSl7usDSN6pWZAjDftZidVW744=
+github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.31 h1:dj6QA12NeZvURRXHPJYfuhVXWPOuVjN8io3O54+d/6s=
+github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.31/go.mod h1:J2A8ug/s3zNREDdcYpSl7usDSN6pWZAjDftZidVW744=
 github.com/frankban/quicktest v1.14.6 h1:7Xjx+VpznH+oBnejlPUj8oUpdxnVs4f8XU8WnHkI4W8=
 github.com/frankban/quicktest v1.14.6/go.mod h1:4ptaffx2x8+WTWXmUCuVU6aPUX1/Mz7zb5vbUoiM6w0=
 github.com/fxamacker/cbor/v2 v2.9.2 h1:X4Ksno9+x3cz0TZv69ec1hxP/+tymuR8PXQJyDwfh78=
