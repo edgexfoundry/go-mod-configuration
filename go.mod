@@ -3,8 +3,8 @@ module github.com/edgexfoundry/go-mod-configuration/v4
 go 1.25.0
 
 require (
-	github.com/edgexfoundry/go-mod-core-contracts/v4 v4.1.0-dev.47
-	github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.35
+	github.com/edgexfoundry/go-mod-core-contracts/v4 v4.1.0-dev.49
+	github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.36
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/cast v1.10.0
 	github.com/stretchr/testify v1.12.1
@@ -12,7 +12,7 @@ require (
 
 require (
 	github.com/eclipse/paho.mqtt.golang v1.5.1 // indirect
-	github.com/fxamacker/cbor/v2 v2.9.3 // indirect
+	github.com/fxamacker/cbor/v2 v2.9.4 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.15 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
