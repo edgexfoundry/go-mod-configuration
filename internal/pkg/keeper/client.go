@@ -254,7 +254,7 @@ func (k *keeperClient) WatchForChanges(updateChannel chan<- interface{}, errorCh
 				// To avoid such cases, always reset configuration (a pointer to a struct) to its zero value
 				// before loading kvConfigs.Response into configuration.
 				v := reflect.ValueOf(configuration)
-				if v.Kind() == reflect.Ptr && !v.IsNil() {
+				if v.Kind() == reflect.Pointer && !v.IsNil() {
 					v = v.Elem()
 					v.Set(reflect.Zero(v.Type()))
 				}
