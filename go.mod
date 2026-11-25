@@ -4,7 +4,7 @@ go 1.27
 
 require (
 	github.com/edgexfoundry/go-mod-core-contracts/v4 v4.1.0-dev.54
-	github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.41
+	github.com/edgexfoundry/go-mod-messaging/v4 v4.1.0-dev.42
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/cast v1.10.0
 	github.com/stretchr/testify v1.12.1
@@ -25,7 +25,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/klauspost/compress v1.20.1 // indirect
 	github.com/leodido/go-urn v1.5.0 // indirect
-	github.com/nats-io/nats.go v1.54.0 // indirect
+	github.com/nats-io/nats.go v1.56.0 // indirect
 	github.com/nats-io/nkeys v0.4.16 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/stretchr/objx v0.5.3 // indirect
